@@ -13,15 +13,16 @@ session_start();
 <?php require 'user_dashboard_navbar.php' //nav bar
 ?>
 <br>
-<input type="text" id="jobID">
 <button onclick="searchById()">Search job by ID </button>
+<input type="text" id="jobID">
+<br>
 <div align="center">
     <table class="blueTable">
         <thead>
         <tr>
             <th>ID</th>
             <th>Title</th>
-            <th>Description</th>
+            <th>Category</th>
             <th>Post Date</th>
         </tr>
         </thead>
@@ -33,7 +34,33 @@ session_start();
         </tr>
         </tfoot>
         <tbody id="tableBody">
+        <tr>
+            <td>0</td>
+            <td>Software Engineer</td>
+            <td>Software</td>
+            <td>01-01-2020</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Part-time Dictator</td>
+            <td>Politics</td>
+            <td>01-01-2020</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Cat Wrestler</td>
+            <td>Home</td>
+            <td>01-01-2020</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Couch Tester</td>
+            <td>Home</td>
+            <td>01-01-2020</td>
+        </tr>
         <?php
+        //TODO UNCOMMENT
+        /*
         $sql = "SELECT jobID,title,briefDescription,postDate FROM 1Job";
         $result = mysqli_query($db,$sql);
         while ($row = mysqli_fetch_array($result)) {
@@ -44,9 +71,9 @@ session_start();
             echo "<td>".$row['postDate']."</td>";
             echo "</tr>";
         }
+        */
         ?>
 
-        </tr>
         </tbody>
 
     </table>
