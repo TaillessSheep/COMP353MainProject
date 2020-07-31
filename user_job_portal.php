@@ -1,5 +1,5 @@
 <?php
-//require 'config.php';TODO UNCOMMENT
+require 'config.php';//TODO UNCOMMENT
 session_start();
 ?>
 <HTML>
