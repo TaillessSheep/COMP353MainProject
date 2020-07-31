@@ -1,5 +1,5 @@
 <?php
-//require 'config.php'; TODO UNCOMMENT
+require 'config.php'; //TODO UNCOMMENT
 // Define variables and initialize with empty values
 $delete_confirm = $password = $confirm_password = "";
 $delete_confirm_err = $password_err = $confirm_password_err = "";
