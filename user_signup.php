@@ -1,6 +1,6 @@
 <?php
 // Include config file
-//require "config.php"; TODO UNCOMMENT
+require "config.php"; //TODO UNCOMMENT
 
 // Define variables and initialize with empty values
 $accountID = $password = $confirm_password = $payment_info = $realname =$phone = $email= $MOP= $isAutoPay= $account_type=$selectedMOP='';

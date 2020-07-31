@@ -16,6 +16,7 @@
             <a href="user_delete_profile.php">Delete Profile</a>
         </div>
     </div>
+    <a href="premium_selection.php">Premium</a>
     <div class="topnav-right">
         <a href="logout.php">Log out</a>
         <a style="pointer-events: none;"> <?php

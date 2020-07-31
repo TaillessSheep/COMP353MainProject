@@ -1,6 +1,11 @@
 <?php
-//require 'config.php'; TODO UNCOMMENT
-
+require 'config.php'; //TODO UNCOMMENT
+// Define variables and initialize with empty values
+$accountID = $username = $password = $confirm_password = "";
+$username_err = $password_err = $confirm_password_err = "";
+$login_error="";
+$accountID_err="";
+$password_err="";
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     $login_error="";
     $accountID_err="";
