@@ -1,5 +1,5 @@
 <?php
-require 'config.php'; //TODO UNCOMMENT
+//require 'config.php'; TODO UNCOMMENT
 // Define variables and initialize with empty values
 $old_accountID = $new_accountID=$old_password = $new_password = $new_category="";
 $old_accountID_err = $new_accountID_err = $old_password_err = $new_password_err = $new_category_err="";
@@ -161,8 +161,10 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 <HTML>
 <HEAD>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </HEAD>
 
 <BODY>
@@ -170,51 +172,74 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 ?>
 <h2 style=" padding-left: 25px;" >Modify Profile</h2>
 <div class="wrapper" style="width: 20%; padding-left: 25px;" >
-<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 
-    <h3>Change Login details</h3>
-    <div class="form-group <?php echo (!empty($accountID_err)) ? 'has-error' : ''; ?>">
-        <label>Old ID</label>
-        <input type="text" name="old_accountID" class="form-control" value="<?php echo $old_accountID; ?>">
-        <span class="help-block"><?php echo $old_accountID_err; ?></span>
-        <label>New ID</label>
-        <input type="text" name="new_accountID" class="form-control" value="<?php echo $new_accountID; ?>">
-        <span class="help-block"><?php echo $new_accountID_err; ?></span>
-    </div>
-    <br>
-    <h3>Change Password</h3>
-    <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
-        <label>Old password</label>
-        <input type="password" name="old_password" class="form-control" value="<?php echo $old_password; ?>">
-        <span class="help-block"><?php echo $old_password_err; ?></span>
-        <label>New password</label>
-        <input type="password" name="new_password" class="form-control" value="<?php echo $new_password; ?>">
-        <span class="help-block"><?php echo $new_password_err; ?></span>
-    </div>
+        <h3>Change Login details</h3>
+        <div class="form-group <?php echo (!empty($accountID_err)) ? 'has-error' : ''; ?>">
+            <label>Old ID</label>
+            <input type="text" name="old_accountID" class="form-control" value="<?php echo $old_accountID; ?>">
+            <span class="help-block"><?php echo $old_accountID_err; ?></span>
+            <label>New ID</label>
+            <input type="text" name="new_accountID" class="form-control" value="<?php echo $new_accountID; ?>">
+            <span class="help-block"><?php echo $new_accountID_err; ?></span>
+        </div>
+        <br>
+        <h3>Change Password</h3>
+        <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
+            <label>Old password</label>
+            <input type="password" name="old_password" class="form-control" value="<?php echo $old_password; ?>">
+            <span class="help-block"><?php echo $old_password_err; ?></span>
+            <label>New password</label>
+            <input type="password" name="new_password" class="form-control" value="<?php echo $new_password; ?>">
+            <span class="help-block"><?php echo $new_password_err; ?></span>
+        </div>
 
-    <br>
-    <h3>Change Account Category</h3>
-    <br>
-    <div class="form-group <?php echo (!empty($new_category_err)) ? 'has-error' : ''; ?>">
-        <label>Account Type:   </label>
-        <select name="new_category" size="1">
-            <option value="" selected disabled hidden>Choose Account Type</option>
-            <option value="basic">Basic (Free!) </option>
-            <option value="prime">Prime (10$/Month)</option>
-            <option value="gold">Gold (20$/Month)</option>
-        </select>
-        <label for="confirm">Confirm Category Change? </label>
-        <input type="radio" id="category_confirm" name="category_confirm" value="category_confirm">
-        <span class="help-block"><?php echo $new_category_err; ?></span>
-    </div>
-    <span class="help-block" style="color: green"><?php echo $update_result; ?></span>
-    <br>
-    <div class="form-group">
-        <input type="submit" class="btn btn-primary" value="Submit">
-        <input type="reset" class="btn btn-default" value="Reset">
-    </div>
+        <br>
+        <h3>Change Account Category
+            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal"><i class="material-icons">info</i></button>
+        </h3>
 
-</form>
+        <br>
+        <div class="form-group <?php echo (!empty($new_category_err)) ? 'has-error' : ''; ?>">
+            <label>Account Type:   </label>
+            <select name="new_category" size="1">
+                <option value="" selected disabled hidden>Choose Account Type</option>
+                <option value="basic">Basic (Free!) </option>
+                <option value="prime">Prime (10$/Month)</option>
+                <option value="gold">Gold (20$/Month)</option>
+            </select>
+            <label for="confirm">Confirm Category Change? </label>
+            <input type="radio" id="category_confirm" name="category_confirm" value="category_confirm">
+            <span class="help-block"><?php echo $new_category_err; ?></span>
+        </div>
+        <span class="help-block" style="color: green"><?php echo $update_result; ?></span>
+        <br>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Submit">
+            <input type="reset" class="btn btn-default" value="Reset">
+        </div>
+    </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Account Category Details</h4>
+            </div>
+            <div class="modal-body">
+                <p>Basic: You may view as many jobs as you wish, but you cannot apply. Fees: Free!</p>
+                <p>Prime: You may view as many jobs as you wish and apply for up to 5 jobs. Fees: 10$ monthly.</p>
+                <p>Gold (Recommended): You may view and apply to as many jobs as you wish! Fees: 20$ monthly.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 </BODY>
 </HTML>
