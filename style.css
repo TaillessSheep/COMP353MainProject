@@ -30,7 +30,7 @@
 }
 /* Navbar container */
 .navbar {
-    overflow: hidden;
+    overflow: visible;
     background-color: #333;
     font-family: Arial;
 }
@@ -142,4 +142,3 @@ table.blueTable tfoot td {
 #tableBody{
     overflow: auto;
 }
-
