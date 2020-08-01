@@ -51,7 +51,7 @@
 /* The dropdown container */
 .dropdown {
     float: left;
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* Dropdown button */
