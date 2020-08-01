@@ -30,7 +30,7 @@
 }
 /* Navbar container */
 .navbar {
-    overflow: hidden;
+    overflow: visible;
     background-color: #333;
     font-family: Arial;
 }
@@ -103,8 +103,8 @@
 
 table.blueTable {
     border: 1px solid #1C6EA4;
-   background-color: #EEEEEE;
-    width: 75%;
+    background-color: #EEEEEE;
+    width: 100%;
     text-align: left;
     border-collapse: collapse;
 }
@@ -139,3 +139,11 @@ table.blueTable tfoot {
 table.blueTable tfoot td {
     font-size: 14px;
 }
+#tableBody{
+    overflow: auto;
+}
+
+
+
+
+
