@@ -1,5 +1,5 @@
 <?php
-//require 'config.php'; TODO UNCOMMENT
+require 'config.php';
 // Define variables and initialize with empty values
 $old_accountID = $new_accountID=$old_password = $new_password = $new_category="";
 $old_accountID_err = $new_accountID_err = $old_password_err = $new_password_err = $new_category_err="";
@@ -127,9 +127,9 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         //Check if this new category is legal with their # of current applications
         elseif(trim($_POST["new_category"]) == 'basic' || trim($_POST["new_category"])=='prime')
         {
-            $sql = "SELECT COUNT(*) AS total_applications FROM `1Applied` WHERE accountID = '".$_SESSION['accountID']."'";
+            $sql = "SELECT COUNT(*) AS total_applications FROM `1Applied` WHERE jobSeekerID = '".$_SESSION['accountID']."'";
             $result = mysqli_query($db,$sql);
-            $row=mysqli_fetch_array($result);
+            $row = mysqli_fetch_array($result);
             if(trim($_POST["new_category"]) == 'basic' && $row['total_applications']>0)
             {
                 $new_category_err="You may not change your account to basic as you have open job applications.";
