@@ -113,7 +113,12 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 echo "<tr>";
                 echo "<td>".$counter."</td>";
                 echo "<td>".$row['methodType']."</td>";
-                echo "<td>".$row['cardNum']."</td>";
+                $myCardNum = "";
+                for ($i = 1; $i <= strlen($row['cardNum'])-4; $i++) {
+                    $myCardNum = $myCardNum."*";
+                }
+                $myCardNum = $myCardNum.substr($row['cardNum'], -4);
+                echo "<td>".$myCardNum."</td>";
                 echo "<td>".$row['holdersName']."</td>";
                 echo "<td>".$row['expirationDate']."</td>";
 
