@@ -124,7 +124,22 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         {
             $new_category_err="Please confirm your new category choice";
         }
-        else
+        //Check if this new category is legal with their # of current applications
+        elseif(trim($_POST["new_category"]) == 'basic' || trim($_POST["new_category"])=='prime')
+        {
+            $sql = "SELECT COUNT(*) AS total_applications FROM `1Applied` WHERE accountID = '".$_SESSION['accountID']."'";
+            $result = mysqli_query($db,$sql);
+            $row=mysqli_fetch_array($result);
+            if(trim($_POST["new_category"]) == 'basic' && $row['total_applications']>0)
+            {
+                $new_category_err="You may not change your account to basic as you have open job applications.";
+            }
+            elseif(trim($_POST["new_category"]) == 'prime' && $row['total_applications']>5)
+            {
+                $new_category_err="You may not change your account to prime as you have more than 5 open job applications.";
+            }
+        }
+        if(empty($new_category_err))
         {
             //Update the category
             $sql = "UPDATE 1User SET premiumOpt = ? WHERE accountID = ? ";
