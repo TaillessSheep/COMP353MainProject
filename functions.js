@@ -100,26 +100,25 @@ function getMoreJobInfoCollapse(jobID){
     formElement.style.visibility='hidden';
 }
 
-function changeDefaultMOP2(mopDis) {
-    alert("<?php echo \"mopDis\"; ?>");
+const selectPaymentMethod = document.querySelector('.paymentMethod');
+const creditCardBlock = document.getElementById("creditInfo");
+const bankAccountBlock = document.getElementById("bankAccountInfo");
 
-    // var input, filter, table, tr, td, i, txtValue;
-    // input = document.getElementById("jobID");
-    // filter = input.value.toUpperCase();
-    // table = document.getElementById("tableBody");
-    // tr = table.getElementsByTagName("tr");
-    //
-    // // Loop through all table rows, and hide those who don't match the search query
-    // for (i = 0; i < tr.length; i++) {
-    //     td = tr[i].getElementsByTagName("td")[0];
-    //     if (td) {
-    //         txtValue = td.textContent || td.innerText;
-    //         if (txtValue.toUpperCase().indexOf(filter) > -1) {
-    //             tr[i].style.display = "";
-    //         } else {
-    //             tr[i].style.display = "none";
-    //         }
-    //     }
-    // }
+selectPaymentMethod.addEventListener('change', (event) => {
 
-}
+    if(creditCardBlock.style.display == "block"){
+        creditCardBlock.style.display = "none";
+        bankAccountBlock.style.display = "block";
+    }else {
+        creditCardBlock.style.display = "block";
+        bankAccountBlock.style.display = "none";
+    }
+
+});
+
+document.getElementById("button_MOPreset").addEventListener('click', (event) => {
+    console.log("heh")
+    creditCardBlock.style.display = "block";
+    bankAccountBlock.style.display = "none";
+
+});
