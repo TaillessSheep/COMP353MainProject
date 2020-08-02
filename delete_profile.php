@@ -40,7 +40,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
     // Check input errors before inserting in database
     if (empty($delete_confirm_err) && empty($password_err) && empty($confirm_password_err))
     {
-        // Prepare an insert statement
+        // Prepare an delete statement
         $sql = "DELETE FROM 1Account WHERE accountID= ? AND password = ?";
 
         if($stmt = mysqli_prepare($db, $sql)){
