@@ -132,7 +132,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             $row=mysqli_fetch_array($result);
             if($row['total_job_posts']>5)
             {
-                $new_category_err="Please confirm your new category choice";
+                $new_category_err="You may not change your account to Prime as you have more than 5 job posts published.";
             }
         }
 
