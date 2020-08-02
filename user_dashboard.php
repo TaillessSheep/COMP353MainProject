@@ -16,7 +16,7 @@ session_start();
     <h2>
         <br>
         <?php
-        $accountID = $_SESSION['accountID'];
+        $accountID = $_SESSION['profileName'];
         echo 'Hello '. $accountID ."! Please select an option above";
         ?>
     </h2>
