@@ -2,21 +2,27 @@
 require 'config.php';
 session_start();
 
+$sql = "SELECT selectedMOP
+            FROM `1user`
+            WHERE accountID = '".$_SESSION['accountID']."';";
+$result = mysqli_query($db,$sql);
+$row = mysqli_fetch_array($result);
+$selectedMOP = $row['selectedMOP'];
 
 $unappliedJob=$accountID=$unappliedJob_err=$unapply_result="";
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
-//    echo "heh";
     $radioVal = $_POST["defaultMOP"];
-    echo $radioVal.$_SESSION['accountID'];
-    $sql = "UPDATE 1user  SET selectedMOP = ".$radioVal." WHERE accountID = '".$_SESSION['accountID']."';";
-    $result = mysqli_query($db,$sql);
+
+    if($radioVal != $selectedMOP){
+        $sql = "UPDATE 1user  SET selectedMOP = ".$radioVal." WHERE accountID = '".$_SESSION['accountID']."';";
+        $result = mysqli_query($db,$sql);
+        echo '<script>alert("You default payment method has been changed!")</script>';
+        header("Refresh:0");
+    }
+
 }
-
-
-
-
 
 ?>
 <HTML>
@@ -52,13 +58,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                     <tbody id="tableBody">
 
                     <?php
-                    $sql = "SELECT selectedMOP
-                            FROM `1user`
-                            WHERE accountID = '".$_SESSION['accountID']."';";
-                    $result = mysqli_query($db,$sql);
-                    $row = mysqli_fetch_array($result);
-                    $selectedMOP = $row['selectedMOP'];
-
                     $sql = "SELECT mopDis,methodType, cardNum, holdersName, expirationDate
                             FROM `1methodofpayment`
                             WHERE accountID = '".$_SESSION['accountID']."';";
