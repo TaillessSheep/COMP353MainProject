@@ -31,6 +31,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
 <!--    <script src="functions.js"></script>-->
+    <script src="method_of_payment.js"></script>
 </HEAD>
 
 <BODY>
@@ -51,6 +52,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                         <th>Holder's Name</th>
                         <th>Expiration Data</th>
                         <th>Default Method</th>
+                        <th>Delete</th>
 
                     </tr>
                     </thead>
@@ -74,13 +76,17 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                         $myCardNum = $myCardNum.substr($row['cardNum'], -4);
                         echo "<td>".$myCardNum."</td>";
                         echo "<td>".$row['holdersName']."</td>";
-                        echo "<td>".$row['expirationDate']."</td>";
+                        $expDate = substr($row['expirationDate'], 0,7);
+                        echo "<td>".$expDate."</td>";
 
                         if($selectedMOP == $row['mopDis']){
                             echo "<td><input type=\"radio\" name=\"defaultMOP\" value=\"".$row['mopDis']."\" checked></td>";
                         }else{
                             echo "<td><input type=\"radio\" name=\"defaultMOP\" value=\"".$row['mopDis']."\"></td>";
                         }
+
+                        echo "<td><button onclick=\"window.location.href ='method_of_payment_delete.php?accountID="
+                            .$_SESSION['accountID']."&mopDis=".$row['mopDis']."'\">Delete</button></td>";
 
                         echo "</tr>";
                         $counter ++;
@@ -93,6 +99,8 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 </table>
                 <input type="submit" class="btn btn-primary" value="Change Default">
             </form>
+
+<td><button onclick="window.location.href ='method_of_payment_delete.php?accountID=2&mopDis=5'">Delete</button></td>
 
         </td>
     </tr>

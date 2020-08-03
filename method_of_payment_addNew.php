@@ -2,8 +2,8 @@
 require 'config.php'; //TODO UNCOMMENT
 session_start();
 $lastPage = $_SESSION["lastPage"];
-$creditCardNumber = $holderName = $expDate = $accountNum = "";
-$methodType_err = $creditCardNumber_err = $holderName_err = $expDate_err = $accountNum_err = $login_error = "";
+$creditCardNumber = $holderName1 = $holderName2 = $expDate = $checkingAccountNum = "";
+$methodType_err = $creditCardNumber_err = $holderName_err1 = $holderName_err2 = $expDate_err = $checkingAccountNum_err = $login_error = "";
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -20,68 +20,91 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
     $myMOPdis = $row['mopDis'] + 1;
 
-    if($_POST["paymentMethod"] == "credit"){
-        $cardNum = mysqli_real_escape_string($db,$_POST['creditCardNumber']);
-        $holderName = mysqli_real_escape_string($db,$_POST['holderName1']);
-        $expDate = mysqli_real_escape_string($db,$_POST['expDate']."-01");
+    if($_POST["paymentMethod"] == "credit") {
+        if (empty(trim($_POST['creditCardNumber']))) {
+            $creditCardNumber_err = "Please enter a credit card number.";
+        } else {
+            $cardNum = mysqli_real_escape_string($db, $_POST['creditCardNumber']);
+        }
+
+        if (empty(trim($_POST['holderName1']))) {
+            $holderName_err1 = "Please enter the name of the card's holder.";
+        } else {
+            $holderName1 = mysqli_real_escape_string($db, $_POST['holderName1']);
+        }
+
+        if (empty(trim($_POST['expDate']))) {
+            $expDate_err = "Please select the expiration date.";
+        } else {
+            $expDate = mysqli_real_escape_string($db, $_POST['expDate'] . "-01");
+        }
+
         $methodType = 'credit';
 
-        // Prepare an insert statement in MOP table
-        $sql = "INSERT INTO 1methodofpayment (accountID, mopDis, methodType, cardNum, holdersName, expirationDate)
-                VALUES (?,?,?,?,?,?)";
+        if (empty(creditCardNumber_err) && empty($holderName_err1) && empty($expDate_err) ){
+            // Prepare an insert statement in MOP table
+            $sql = "INSERT INTO 1methodofpayment (accountID, mopDis, methodType, cardNum, holdersName, expirationDate)
+                    VALUES (?,?,?,?,?,?)";
+            if ($stmt = mysqli_prepare($db, $sql)) {
+                mysqli_stmt_bind_param($stmt, "ssssss", $param_accountNum, $param_myMOPdis, $param_methodType, $param_cardNum, $param_holderName, $param_expDate);
+                // Set parameters
+                $param_accountNum = $_SESSION['accountID'];
+                $param_myMOPdis = $myMOPdis;
+                $param_methodType = $methodType;
+                $param_cardNum = $cardNum;
+                $param_holderName = $holderName1;
+                $param_expDate = $expDate;
 
-        if($stmt = mysqli_prepare($db, $sql))
-        {
-
-            mysqli_stmt_bind_param($stmt, "ssssss", $param_accountNum,$param_myMOPdis,$param_methodType,$param_cardNum,$param_holderName,$param_expDate);
-            // Set parameters
-            $param_accountNum = $_SESSION['accountID'];
-            $param_myMOPdis = $myMOPdis;
-            $param_methodType = $methodType;
-            $param_cardNum = $cardNum;
-            $param_holderName = $holderName;
-            $param_expDate = $expDate;
-
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
-        }
-        else{
-            echo $db->error;
+                mysqli_stmt_execute($stmt);
+                echo $stmt->error;
+                mysqli_stmt_close($stmt);
+                header("location: " . $_SESSION["lastPage"]);
+            } else {
+                echo $db->error;
+            }
         }
 
     }else{
+        if(empty(trim($_POST['creditCardNumber']))){
+            $checkingAccountNum_err = "Please enter your checking account number.";
+        }else{
+            $checkingAccountNum = mysqli_real_escape_string($db,$_POST['accountNum']);
+        }
+
+        if(empty(trim($_POST['holderName2']))){
+            $holderName_err2 = "Please enter the name of the card's holder.";
+        }else{
+            $holderName2 = mysqli_real_escape_string($db,$_POST['holderName2']);
+        }
+
         $cardNum = mysqli_real_escape_string($db,$_POST['accountNum']);
         $holderName = mysqli_real_escape_string($db,$_POST['holderName2']);
         $methodType = 'checking';
 
-        // Prepare an insert statement in MOP table
-        $sql = "INSERT INTO 1methodofpayment (accountID, mopDis, methodType, cardNum, holdersName)
-                VALUES (?,?,?,?,?)";
+        if(empty($checkingAccountNum_err) && empty($holderName_err2)) {
+            // Prepare an insert statement in MOP table
+            $sql = "INSERT INTO 1methodofpayment (accountID, mopDis, methodType, cardNum, holdersName)
+                    VALUES (?,?,?,?,?)";
 
-        if($stmt = mysqli_prepare($db, $sql))
-        {
+            if ($stmt = mysqli_prepare($db, $sql)) {
 
-            mysqli_stmt_bind_param($stmt, "sssss", $param_accountNum,$param_myMOPdis,$param_methodType,$param_cardNum,$param_holderName);
-            // Set parameters
-            $param_accountNum = $_SESSION['accountID'];
-            $param_myMOPdis = $myMOPdis;
-            $param_methodType = $methodType;
-            $param_cardNum = $cardNum;
-            $param_holderName = $holderName;
+                mysqli_stmt_bind_param($stmt, "sssss", $param_accountNum, $param_myMOPdis, $param_methodType, $param_cardNum, $param_holderName);
+                // Set parameters
+                $param_accountNum = $_SESSION['accountID'];
+                $param_myMOPdis = $myMOPdis;
+                $param_methodType = $methodType;
+                $param_cardNum = $cardNum;
+                $param_holderName = $holderName2;
 
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
-            header("location: ".$_SESSION["lastPage"]);
-        }
-        else{
-            echo $db->error;
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+                header("location: " . $_SESSION["lastPage"]);
+            } else {
+                echo $db->error;
+            }
         }
 
     }
-
-
-
-
 
 }
 ?>
@@ -126,10 +149,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="number" name="creditCardNumber" class="form-control" value="<?php echo $creditCardNumber; ?>">
                 <span class="help-block"><?php echo $creditCardNumber_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($holderName_err)) ? 'has-error' : ''; ?>">
+            <div class="form-group <?php echo (!empty($holderName_err1)) ? 'has-error' : ''; ?>">
                 <label>Card Holder's Name</label>
-                <input type="text" name="holderName1" class="form-control" value="<?php echo $holderName; ?>">
-                <span class="help-block"><?php echo $holderName_err; ?></span>
+                <input type="text" name="holderName1" class="form-control" value="<?php echo $holderName1; ?>">
+                <span class="help-block"><?php echo $holderName_err1; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($expDate_err)) ? 'has-error' : ''; ?>">
                 <label>Expiration Date</label>
@@ -140,15 +163,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!--    bank account block-->
         <div id="bankAccountInfo" style="display: none">
-            <div class="form-group <?php echo (!empty($accountNum_err)) ? 'has-error' : ''; ?>">
+            <div class="form-group <?php echo (!empty($checkingAccountNum_err)) ? 'has-error' : ''; ?>">
                 <label id="accountNum">Bank Account Number</label>
-                <input type="number" name="accountNum" class="form-control" value="<?php echo $accountNum; ?>">
-                <span class="help-block"><?php echo $accountNum_err; ?></span>
+                <input type="number" name="accountNum" class="form-control" value="<?php echo $checkingAccountNum; ?>">
+                <span class="help-block"><?php echo $checkingAccountNum_err; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($holderName_err)) ? 'has-error' : ''; ?>">
+            <div class="form-group <?php echo (!empty($holderName_err2)) ? 'has-error' : ''; ?>">
                 <label>Card Holder's Name</label>
-                <input type="text" name="holderName2" class="form-control" value="<?php echo $holderName; ?>">
-                <span class="help-block"><?php echo $holderName_err; ?></span>
+                <input type="text" name="holderName2" class="form-control" value="<?php echo $holderName2; ?>">
+                <span class="help-block"><?php echo $holderName_err2; ?></span>
             </div>
         </div>
 
@@ -158,6 +181,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="form-group">
             <input type="submit" class="btn btn-primary" value="Confirm">
             <input type="reset" id="button_MOPreset" class="btn btn-default" value="Reset">
+            <button onclick="window.location.href='<?php echo $lastPage; ?>'">Cancel</button>
         </div>
     </form>
 </div>

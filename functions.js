@@ -101,3 +101,9 @@ function getMoreJobInfoCollapse(jobID){
 }
 
 
+function test() {
+    alert("haha");
+    console.log("Nice!");
+}
+alert("haha");
+console.log("Nice!");
