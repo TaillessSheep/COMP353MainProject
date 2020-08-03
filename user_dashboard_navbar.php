@@ -13,7 +13,7 @@
         </button>
         <div class="dropdown-content">
             <a href="user_modify_profile.php">Update Profile</a>
-            <a href="user_delete_profile.php">Delete Profile</a>
+            <a href="delete_profile.php">Delete Profile</a>
         </div>
     </div>
     <a href="method_of_payment.php">Payment</a>

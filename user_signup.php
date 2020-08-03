@@ -4,7 +4,7 @@ require "config.php"; //TODO UNCOMMENT
 
 // Define variables and initialize with empty values
 $accountID = $password = $confirm_password = $payment_info = $realname =$phone = $email= $MOP= $isAutoPay= $account_type=$selectedMOP='';
-$accountID_err = $password_err = $confirm_password_err = $payment_info_err = $realname_err = $phone_err= $email_err= $MOP_err= $isAutoPay= $account_type_err="";
+$accountID_err = $password_err = $confirm_password_err = $payment_info_err = $realname_err = $phone_err= $email_err= $MOP_err= $isAutoPay_err= $account_type_err="";
 $charge="";
 
 // Processing form data when form is submitted

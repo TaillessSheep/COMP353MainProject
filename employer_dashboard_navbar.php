@@ -12,7 +12,7 @@
         </button>
         <div class="dropdown-content">
             <a href="employer_modify_profile.php">Update Profile</a>
-            <a href="employer_delete_profile.php">Delete Profile</a>
+            <a href="delete_profile.php">Delete Profile</a>
         </div>
     </div>
     <a href="premium_selection.php">Premium</a>
