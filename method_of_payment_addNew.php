@@ -11,61 +11,78 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $accountID_err="";
     $password_err="";
 
-    echo $_POST["paymentMethod"];
-    // ID and password sent from form
-
-//    $accountID = mysqli_real_escape_string($db,$_POST['accountID']);
-//    $accountID = $_POST['accountID'];
+    $sql = "SELECT mopDis
+                FROM `1methodofpayment`
+                WHERE accountID = 'axel'
+                ORDER BY mopDis DESC LIMIT 1;
+                ";
+    $result = mysqli_query($db,$sql);
+    $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+    $myMOPdis = $row['mopDis'] + 1;
 
     if($_POST["paymentMethod"] == "credit"){
+        $cardNum = mysqli_real_escape_string($db,$_POST['creditCardNumber']);
+        $holderName = mysqli_real_escape_string($db,$_POST['holderName1']);
+        $expDate = mysqli_real_escape_string($db,$_POST['expDate']."-01");
+        $methodType = 'credit';
+
+        // Prepare an insert statement in MOP table
+        $sql = "INSERT INTO 1methodofpayment (accountID, mopDis, methodType, cardNum, holdersName, expirationDate)
+                VALUES (?,?,?,?,?,?)";
+
+        if($stmt = mysqli_prepare($db, $sql))
+        {
+
+            mysqli_stmt_bind_param($stmt, "ssssss", $param_accountNum,$param_myMOPdis,$param_methodType,$param_cardNum,$param_holderName,$param_expDate);
+            // Set parameters
+            $param_accountNum = $_SESSION['accountID'];
+            $param_myMOPdis = $myMOPdis;
+            $param_methodType = $methodType;
+            $param_cardNum = $cardNum;
+            $param_holderName = $holderName;
+            $param_expDate = $expDate;
+
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+        }
+        else{
+            echo $db->error;
+        }
 
     }else{
+        $cardNum = mysqli_real_escape_string($db,$_POST['accountNum']);
+        $holderName = mysqli_real_escape_string($db,$_POST['holderName2']);
+        $methodType = 'checking';
+
+        // Prepare an insert statement in MOP table
+        $sql = "INSERT INTO 1methodofpayment (accountID, mopDis, methodType, cardNum, holdersName)
+                VALUES (?,?,?,?,?)";
+
+        if($stmt = mysqli_prepare($db, $sql))
+        {
+
+            mysqli_stmt_bind_param($stmt, "sssss", $param_accountNum,$param_myMOPdis,$param_methodType,$param_cardNum,$param_holderName);
+            // Set parameters
+            $param_accountNum = $_SESSION['accountID'];
+            $param_myMOPdis = $myMOPdis;
+            $param_methodType = $methodType;
+            $param_cardNum = $cardNum;
+            $param_holderName = $holderName;
+
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+            header("location: ".$_SESSION["lastPage"]);
+        }
+        else{
+            echo $db->error;
+        }
 
     }
 
-//    $sql = "SELECT accountID,profileName FROM 1Account WHERE accountID = '$accountID' and password = '$password'";
-//    $result = mysqli_query($db,$sql);
-//    $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-//    $count = mysqli_num_rows($result);
-//    $_SESSION['profileName']    = $row['profileName'];
-//    // If result matched $accountID and $password, table row must be 1 row
-//    if($count == 1) {
-//        // Verify if user's account is activated and if it is an employer or JS
-//        $sql = "SELECT activation,isEmployer FROM 1User WHERE accountID= '$accountID'";
-//        $result = mysqli_query($db,$sql);
-//        $row = mysqli_fetch_array($result);
-//        if($row['activation']==1){
-//            $_SESSION['accountID']  = $accountID;
-//            if( $row['isEmployer']==1) //Valid employer account
-//            {
-//                header("location: employer_dashboard.php");
-//            }
-//            elseif($row['isEmployer']==0) //Valid JS account
-//            {
-//                header("location: user_dashboard.php");
-//            }
-//
-//        }else{
-//            $error="Your account is deactivated. Contact an administrator.";
-//        }
-//
-//
-//        if($row['activation']==1 && $row['isEmployer']==1) //Valid employer account
-//        {
-//            $_SESSION['accountID']=$accountID;
-//            header("location: employer_dashboard.php");
-//        }
-//        elseif($row['activation']==1 && $row['isEmployer']==0) //Valid JS account
-//        {
-//            $_SESSION['accountID']=$accountID;
-//            header("location: user_dashboard.php");
-//        }
-//
-//
-//    }else {
-//        $error = "Your Login Name or Password is invalid";
-//    }
-    header("location: ".$_SESSION["lastPage"]);
+
+
+
+
 }
 ?>
 <?php
@@ -111,7 +128,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div class="form-group <?php echo (!empty($holderName_err)) ? 'has-error' : ''; ?>">
                 <label>Card Holder's Name</label>
-                <input type="text" name="holderName" class="form-control" value="<?php echo $holderName; ?>">
+                <input type="text" name="holderName1" class="form-control" value="<?php echo $holderName; ?>">
                 <span class="help-block"><?php echo $holderName_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($expDate_err)) ? 'has-error' : ''; ?>">
@@ -125,12 +142,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="bankAccountInfo" style="display: none">
             <div class="form-group <?php echo (!empty($accountNum_err)) ? 'has-error' : ''; ?>">
                 <label id="accountNum">Bank Account Number</label>
-                <input type="text" name="accountNum" class="form-control" value="<?php echo $accountNum; ?>">
+                <input type="number" name="accountNum" class="form-control" value="<?php echo $accountNum; ?>">
                 <span class="help-block"><?php echo $accountNum_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($holderName_err)) ? 'has-error' : ''; ?>">
                 <label>Card Holder's Name</label>
-                <input type="text" name="holderName" class="form-control" value="<?php echo $holderName; ?>">
+                <input type="text" name="holderName2" class="form-control" value="<?php echo $holderName; ?>">
                 <span class="help-block"><?php echo $holderName_err; ?></span>
             </div>
         </div>
@@ -146,7 +163,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 </body>
 </html>
-<script src="functions.js"></script>
+<script src="method_of_payment_addNew_func.js"></script>
 
 
 
