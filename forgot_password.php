@@ -1,8 +1,8 @@
 <?php
 require 'config.php';
 // Define variables and initialize with empty values
-$new_password = $new_password_confirm= $email = $token ="";
-$new_password_err = $new_password_confirm_err= $email_err = $token_err =$token_err2="";
+$password = $confirm_password= $email = $token ="";
+$password_err = $confirm_password_err= $email_err = $token_err =$token_err2="";
 $query_result=$query_result2="";
 
 // Processing form data when form is submitted
