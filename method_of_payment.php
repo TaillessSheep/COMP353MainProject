@@ -25,7 +25,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
     }elseif (isset($_POST['delete'])){
         $accountID = $_SESSION['accountID'];
         $mopDis = $_POST['delete'];
-        $sql = "DELETE FROM `1Methodofpayment` WHERE accountID = '".$accountID."' AND mopDis = ".$mopDis.";";
+        $sql = "DELETE FROM `1MethodOfPayment` WHERE accountID = '".$accountID."' AND mopDis = ".$mopDis.";";
         $result = mysqli_query($db,$sql);
     }
 
@@ -69,7 +69,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
 
                     <?php
                     $sql = "SELECT mopDis,methodType, cardNum, holdersName, expirationDate
-                            FROM `1Methodofpayment`
+                            FROM `1MethodOfPayment`
                             WHERE accountID = '".$_SESSION['accountID']."';";
                     $result = mysqli_query($db,$sql);
                     $counter = 1;
