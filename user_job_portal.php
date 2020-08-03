@@ -21,6 +21,21 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
     {
         $accountID = trim($_SESSION["accountID"]);
     }
+
+    //Verify if user can apply to this job given his account category
+    $sql = "SELECT premiumOpt, COUNT(*) AS total_applications FROM `1Applied` A, 1User U
+    WHERE jobSeekerID=accountID AND jobSeekerID = '".$_SESSION['accountID']."'";
+    $result = mysqli_query($db,$sql);
+    $row = mysqli_fetch_array($result);
+    if($row['premiumOpt'] == 'basic')
+    {
+        $appliedJob_err="You cannot apply to job with a basic account. Upgrade your account to apply to this job!";
+    }
+    elseif($row['premiumOpt'] == 'prime' && $row['total_applications']>5)
+    {
+        $appliedJob_err="You have already applied to 5 jobs. Upgrade your account to apply to this job!";
+    }
+    
     if (empty($appliedJob_err))
     {
         $sql = "INSERT INTO `1Applied` (jobID, jobSeekerID,status) VALUES (?, ?, ?)";
