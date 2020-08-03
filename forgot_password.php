@@ -166,7 +166,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                             // Attempt to execute the prepared statement
                             if (mysqli_stmt_execute($stmt))
                             {
-                                $query_result2 = 'Password was sucessfully changed.';
+                                $query_result2 = 'Password was sucessfully changed. <a href="login.php">Go back to login</a>';
                             }
                             else
                             {
