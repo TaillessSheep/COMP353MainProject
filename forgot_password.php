@@ -58,9 +58,10 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 {
                     $to = $email;
                     $subject = "Password Reset";
-                    $txt = "<H2> Your reset account token: <H2><br><p>Please use the following token to reset your password:</p>
-                            <p><h3>" . $token . "</h3></p>";
+                    $txt = "<html><body><H2> Don't worry, even the best of us forget their passwords! <H2><p>Please use the following token to reset your password:</p>
+                            <p><h3>" . $token . "</h3></p></body></html>";
                     $headers = "From: TheNewIndeed@company.com" . "\r\n";
+                    $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
                     mail($to, $subject, $txt, $headers);
                     $query_result = 'A password reset token has been sent to your email adress.';
                 } else
