@@ -93,7 +93,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="reset" class="btn btn-default" value="Reset">
         </div>
         <p>Not registered yet? <a href="New_user_choose_type.php">Sign up here</a>.</p>
-        <p><a href="New_user_choose_type.php">Forgot your password?</a>.</p>
+        <p><a href="forgot_password.php">Forgot your password?</a>.</p>
     </form>
 </div>
 </body>
