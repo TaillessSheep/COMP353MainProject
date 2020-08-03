@@ -3,8 +3,8 @@ require 'config.php';
 session_start();
 
 $sql = "SELECT selectedMOP
-            FROM `1user`
-            WHERE accountID = '".$_SESSION['accountID']."';";
+        FROM `1User`
+        WHERE accountID = '".$_SESSION['accountID']."';";
 $result = mysqli_query($db,$sql);
 $row = mysqli_fetch_array($result);
 $selectedMOP = $row['selectedMOP'];
@@ -17,7 +17,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
         $radioVal = $_POST["defaultMOP"];
 
         if($radioVal != $selectedMOP){
-            $sql = "UPDATE 1user  SET selectedMOP = ".$radioVal." WHERE accountID = '".$_SESSION['accountID']."';";
+            $sql = "UPDATE 1User  SET selectedMOP = ".$radioVal." WHERE accountID = '".$_SESSION['accountID']."';";
             $result = mysqli_query($db,$sql);
             echo '<script>alert("You default payment method has been changed!")</script>';
             header("Refresh:0");
@@ -25,7 +25,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
     }elseif (isset($_POST['delete'])){
         $accountID = $_SESSION['accountID'];
         $mopDis = $_POST['delete'];
-        $sql = "DELETE FROM `1methodofpayment` WHERE accountID = '".$accountID."' AND mopDis = ".$mopDis.";";
+        $sql = "DELETE FROM `1Methodofpayment` WHERE accountID = '".$accountID."' AND mopDis = ".$mopDis.";";
         $result = mysqli_query($db,$sql);
     }
 
@@ -69,7 +69,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
 
                     <?php
                     $sql = "SELECT mopDis,methodType, cardNum, holdersName, expirationDate
-                            FROM `1methodofpayment`
+                            FROM `1Methodofpayment`
                             WHERE accountID = '".$_SESSION['accountID']."';";
                     $result = mysqli_query($db,$sql);
                     $counter = 1;
