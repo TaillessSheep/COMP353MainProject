@@ -2,8 +2,8 @@
 require 'config.php';
 // Define variables and initialize with empty values
 $new_password = $new_password_confirm= $email = $token ="";
-$new_password_err = $new_password_confirm_err= $email_err = $token_err ="";
-$query_result="";
+$new_password_err = $new_password_confirm_err= $email_err = $token_err =$token_err2="";
+$query_result=$query_result2="";
 
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
@@ -100,7 +100,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         //Validate Token
         if (empty(trim($_POST["token"])))
         {
-            $token_err = "Please enter a token.";
+            $token_err2 = "Please enter a token.";
         } else
         {
             $token = trim($_POST["token"]);
@@ -124,55 +124,58 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             }
         }
 
-        if(empty($token_err) && empty($email_err) & empty($password_err) & empty($confirm_password_err))
+        if(empty($token_err2) && empty($email_err) & empty($password_err) & empty($confirm_password_err))
         {
-            $sql = "SELECT password_reset_token FROM `1Account` WHERE accountID = '$accountID'";
+            $sql = "SELECT password_reset_token FROM 1Account A, `1User` U 
+                    WHERE A.accountID = U.accountID AND email = '$email'";
             $result = mysqli_query($db, $sql);
             $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
             $db_token=$row['password_reset_token'];
             if($token != $db_token)
             {
-                $query_result='Reset token is not valid.';
+                $token_err2='Reset token is not valid.';
             }
             else{
-                $sql = "UPDATE 1Account SET password = ? WHERE accountID = ?";
+                $sql = "UPDATE 1Account A, `1User` U 
+                        SET password = ? WHERE A.accountID = U.accountID AND U.email = ?";
                 if ($stmt = mysqli_prepare($db, $sql))
                 {
                     // Bind variables to the prepared statement as parameters
-                    mysqli_stmt_bind_param($stmt, "ss", $param_password, $param_accountID);
+                    mysqli_stmt_bind_param($stmt, "ss", $param_password, $param_email);
 
                     // Set parameters
-                    $param_accountID = $accountID;
+                    $param_email = $email;
                     $param_password = $password;
 
                     // Attempt to execute the prepared statement
                     if (mysqli_stmt_execute($stmt))
                     {
                         //Sucess. Reset password_reset_token
-                        $sql = "UPDATE 1Account SET password_reset_token = ? WHERE accountID = ?";
+                        $sql = "UPDATE 1Account A, `1User` U 
+                        SET password_reset_token = ? WHERE A.accountID = U.accountID AND U.email = ?";
                         if ($stmt = mysqli_prepare($db, $sql))
                         {
                             // Bind variables to the prepared statement as parameters
-                            mysqli_stmt_bind_param($stmt, "ss", $param_token, $param_accountID);
+                            mysqli_stmt_bind_param($stmt, "ss", $param_token, $param_email);
 
                             // Set parameters
-                            $param_accountID = $accountID;
+                            $param_accountID = $email;
                             $param_token = "";
 
                             // Attempt to execute the prepared statement
                             if (mysqli_stmt_execute($stmt))
                             {
-                                $query_result = 'Password was sucessfully changed.';
+                                $query_result2 = 'Password was sucessfully changed.';
                             }
                             else
                             {
-                                $query_result = 'Something went wrong. Please try again later';
+                                $query_result2 = 'Something went wrong. Please try again later';
                             }
                         }
                     }
                     else
                     {
-                        $query_result = 'Something went wrong. Please try again later';
+                        $query_result2 = 'Something went wrong. Please try again later';
                     }
                 }
             }
@@ -205,30 +208,31 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             <input type="reset" class="btn btn-default" value="Reset">
         </div>
     </form>
+    <span class="help-block" style="color: green"><?php echo $query_result; ?></span>
     <br>
     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
         <h3>Change Password</h3>
         <!-- email-->
-        <div class="form-group <?php echo (!empty($email)) ? 'has-error' : ''; ?>">
+        <div class="form-group">
             <label>Email</label>
             <input type="email" name="email2" class="form-control" value="<?php echo $email; ?>">
             <span class="help-block"><?php echo $email_err; ?></span>
         </div>
         <!-- token-->
-        <div class="form-group <?php echo (!empty($token)) ? 'has-error' : ''; ?>">
+        <div class="form-group">
             <label>Token</label>
             <input type="text" name="token" class="form-control" value="">
-            <span class="help-block"><?php echo $token_err; ?></span>
+            <span class="help-block"><?php echo $token_err2; ?></span>
         </div>
         <!-- password-->
         <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
-            <label>Password</label>
+            <label>New Password</label>
             <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
             <span class="help-block"><?php echo $password_err; ?></span>
         </div>
         <!-- confirm password-->
         <div class="form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>">
-            <label>Confirm Password</label>
+            <label>Confirm New Password</label>
             <input type="password" name="confirm_password" class="form-control" value="<?php $confirm_password ='';
             echo $confirm_password; ?>">
             <span class="help-block"><?php echo $confirm_password_err; ?></span>
@@ -238,6 +242,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             <input type="reset" class="btn btn-default" value="Reset">
         </div>
     </form>
+    <span class="help-block" style="color: green"><?php echo $query_result2; ?></span>
 </div>
 </BODY>
 </HTML>
