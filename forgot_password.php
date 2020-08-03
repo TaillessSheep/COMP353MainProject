@@ -1,5 +1,5 @@
 <?php
-//require 'config.php'; TODO UNCOMMENT
+require 'config.php';
 // Define variables and initialize with empty values
 $new_password = $new_password_confirm= $email = $token ="";
 $new_password_err = $new_password_confirm_err= $email_err = $token_err ="";
