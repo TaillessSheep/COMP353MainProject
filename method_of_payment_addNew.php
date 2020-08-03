@@ -13,7 +13,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
 
     $sql = "SELECT mopDis
             FROM `1MethodOfPayment`
-            WHERE accountID = 'axel'
+            WHERE accountID = ".$_SESSION['accountID']."
             ORDER BY mopDis DESC LIMIT 1;
             ";
     $result = mysqli_query($db,$sql);
