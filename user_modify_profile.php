@@ -1,5 +1,5 @@
 <?php
-//require 'config.php'; TODO UNCOMMENT
+require 'config.php';
 // Define variables and initialize with empty values
 $old_accountID = $new_accountID=$old_password = $new_password = $new_category="";
 $old_accountID_err = $new_accountID_err = $old_password_err = $new_password_err = $new_category_err="";
@@ -120,7 +120,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         {
             $new_category_err = "Please select a category.";
         }
-        elseif(empty(trim($_POST["category_confirm"])))
+        elseif(!isset($_POST['category_confirm']))
         {
             $new_category_err="Please confirm your new category choice";
         }
