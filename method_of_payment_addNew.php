@@ -12,10 +12,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $password_err="";
 
     $sql = "SELECT mopDis
-                FROM `1methodofpayment`
-                WHERE accountID = 'axel'
-                ORDER BY mopDis DESC LIMIT 1;
-                ";
+            FROM `1methodofpayment`
+            WHERE accountID = 'axel'
+            ORDER BY mopDis DESC LIMIT 1;
+            ";
     $result = mysqli_query($db,$sql);
     $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
     $myMOPdis = $row['mopDis'] + 1;
@@ -41,7 +41,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $methodType = 'credit';
 
-        if (empty(creditCardNumber_err) && empty($holderName_err1) && empty($expDate_err) ){
+        if (empty($creditCardNumber_err) && empty($holderName_err1) && empty($expDate_err) ){
             // Prepare an insert statement in MOP table
             $sql = "INSERT INTO 1methodofpayment (accountID, mopDis, methodType, cardNum, holdersName, expirationDate)
                     VALUES (?,?,?,?,?,?)";
@@ -59,9 +59,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo $stmt->error;
                 mysqli_stmt_close($stmt);
                 header("location: " . $_SESSION["lastPage"]);
-            } else {
-                echo $db->error;
             }
+//            else {
+//                echo $db->error;
+//            }
         }
 
     }else{
@@ -100,7 +101,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 mysqli_stmt_close($stmt);
                 header("location: " . $_SESSION["lastPage"]);
             } else {
-                echo $db->error;
+//                echo $db->error;
             }
         }
 

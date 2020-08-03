@@ -94,8 +94,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
                         }
 
                         echo "<td><button class='deleteMOPButton' name='delete' value='".$row['mopDis']."'>Delete</button></td>";
-//                        echo "<td><button onclick=\"window.location.href ='method_of_payment_delete.php?accountID="
-//                            .$_SESSION['accountID']."&mopDis=".$row['mopDis']."'\">Delete</button></td>";
 
                         echo "</tr>";
                         $counter ++;
@@ -108,8 +106,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
                 </table>
                 <input type="submit" name="changeDefault" class="btn btn-primary" value="Change Default">
             </form>
-
-<!--<button onclick="window.location.href ='method_of_payment_delete.php?accountID=2&mopDis=5'">Delete</button>-->
 
         </td>
     </tr>
@@ -129,4 +125,4 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
 
 </BODY>
 </HTML>
-<script src="method_of_payment.js"></script>
+<!--<script src="method_of_payment.js"></script>-->

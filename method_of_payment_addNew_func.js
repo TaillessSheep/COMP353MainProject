@@ -15,10 +15,8 @@ document.querySelector('.paymentMethod').addEventListener('change', (event) => {
 
 
 document.getElementById("button_MOPreset").addEventListener('click', (event) => {
-    console.log("heh")
     creditCardBlock.style.display = "block";
     bankAccountBlock.style.display = "none";
-
 });
 
 
