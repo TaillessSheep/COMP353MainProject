@@ -12,7 +12,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
     //Send token email
     if (isset($_POST['sendEmail']))
     {
-
         if (empty(trim($_POST["email"])))
         {
             $email_err = "Please enter an email address.";
@@ -21,8 +20,12 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             $email = trim($_POST['email']);
             $sql = "SELECT accountID,email FROM 1User WHERE email = '$email'";
             $result = mysqli_query($db, $sql);
-            $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-            $count = mysqli_num_rows($result);
+            if($result != false)
+            {
+                $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                $count = mysqli_num_rows($result);
+            }
+
             // If result matched an email, table row must be 1 row
             if ($count != 1)
             {
@@ -34,7 +37,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         {
             try
             {
-                $token = bin2hex(random_bytes(30));
+                $token = bin2hex(random_bytes(10));
             } catch (Exception $e)
             {
                 $query_result = 'Something went wrong. Try again later.';
@@ -188,8 +191,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 </HEAD>
 
 <BODY>
-<?php require 'user_dashboard_navbar.php' //nav bar
-?>
 <h2 style=" padding-left: 25px;" >Reset password</h2>
 <div class="wrapper" style="width: 20%; padding-left: 25px;" >
     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
@@ -216,7 +217,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         <!-- token-->
         <div class="form-group <?php echo (!empty($token)) ? 'has-error' : ''; ?>">
             <label>Token</label>
-            <input type="text" name="token" class="form-control" value="<?php echo $token; ?>">
+            <input type="text" name="token" class="form-control" value="">
             <span class="help-block"><?php echo $token_err; ?></span>
         </div>
         <!-- password-->
