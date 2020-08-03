@@ -12,7 +12,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
     $password_err="";
 
     $sql = "SELECT mopDis
-            FROM `1Methodofpayment`
+            FROM `1MethodOfPayment`
             WHERE accountID = 'axel'
             ORDER BY mopDis DESC LIMIT 1;
             ";
@@ -43,7 +43,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
 
         if (empty($creditCardNumber_err) && empty($holderName_err1) && empty($expDate_err) ){
             // Prepare an insert statement in MOP table
-            $sql = "INSERT INTO 1Methodofpayment (accountID, mopDis, methodType, cardNum, holdersName, expirationDate)
+            $sql = "INSERT INTO 1MethodOfPayment (accountID, mopDis, methodType, cardNum, holdersName, expirationDate)
                     VALUES (?,?,?,?,?,?)";
             if ($stmt = mysqli_prepare($db, $sql)) {
                 mysqli_stmt_bind_param($stmt, "ssssss", $param_accountNum, $param_myMOPdis, $param_methodType, $param_cardNum, $param_holderName, $param_expDate);
@@ -82,7 +82,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
 
         if(empty($checkingAccountNum_err) && empty($holderName_err2)) {
             // Prepare an insert statement in MOP table
-            $sql = "INSERT INTO 1Methodofpayment (accountID, mopDis, methodType, cardNum, holdersName)
+            $sql = "INSERT INTO 1MethodOfPayment (accountID, mopDis, methodType, cardNum, holdersName)
                     VALUES (?,?,?,?,?)";
 
             if ($stmt = mysqli_prepare($db, $sql)) {
