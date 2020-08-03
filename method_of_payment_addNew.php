@@ -6,7 +6,7 @@ $creditCardNumber = $holderName1 = $holderName2 = $expDate = $checkingAccountNum
 $methodType_err = $creditCardNumber_err = $holderName_err1 = $holderName_err2 = $expDate_err = $checkingAccountNum_err = $login_error = "";
 
 
-if($_SERVER["REQUEST_METHOD"] == "POST") {
+if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
     $login_error="";
     $accountID_err="";
     $password_err="";
@@ -66,10 +66,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
     }else{
-        if(empty(trim($_POST['creditCardNumber']))){
+        if(empty(trim($_POST['checkingAccountNum']))){
             $checkingAccountNum_err = "Please enter your checking account number.";
         }else{
-            $checkingAccountNum = mysqli_real_escape_string($db,$_POST['accountNum']);
+            $checkingAccountNum = mysqli_real_escape_string($db,$_POST['checkingAccountNum']);
         }
 
         if(empty(trim($_POST['holderName2']))){
@@ -78,8 +78,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             $holderName2 = mysqli_real_escape_string($db,$_POST['holderName2']);
         }
 
-        $cardNum = mysqli_real_escape_string($db,$_POST['accountNum']);
-        $holderName = mysqli_real_escape_string($db,$_POST['holderName2']);
         $methodType = 'checking';
 
         if(empty($checkingAccountNum_err) && empty($holderName_err2)) {
@@ -94,7 +92,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $param_accountNum = $_SESSION['accountID'];
                 $param_myMOPdis = $myMOPdis;
                 $param_methodType = $methodType;
-                $param_cardNum = $cardNum;
+                $param_cardNum = $checkingAccountNum;
                 $param_holderName = $holderName2;
 
                 mysqli_stmt_execute($stmt);
@@ -166,7 +164,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="bankAccountInfo" style="display: none">
             <div class="form-group <?php echo (!empty($checkingAccountNum_err)) ? 'has-error' : ''; ?>">
                 <label id="accountNum">Bank Account Number</label>
-                <input type="number" name="accountNum" class="form-control" value="<?php echo $checkingAccountNum; ?>">
+                <input type="number" name="checkingAccountNum" class="form-control" value="<?php echo $checkingAccountNum; ?>">
                 <span class="help-block"><?php echo $checkingAccountNum_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($holderName_err2)) ? 'has-error' : ''; ?>">
@@ -180,11 +178,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <span class="help-block"><?php echo $login_error; ?></span>
         <br>
         <div class="form-group">
-            <input type="submit" class="btn btn-primary" value="Confirm">
+            <input type="submit" name="Confirm" class="btn btn-primary" value="Confirm">
             <input type="reset" id="button_MOPreset" class="btn btn-default" value="Reset">
-            <button onclick="window.location.href='<?php echo $lastPage; ?>'">Cancel</button>
         </div>
     </form>
+    <button onclick="window.location.href='<?php echo $lastPage; ?>'">Cancel</button>
 </div>
 </body>
 </html>

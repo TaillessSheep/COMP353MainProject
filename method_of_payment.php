@@ -20,7 +20,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
             $sql = "UPDATE 1User  SET selectedMOP = ".$radioVal." WHERE accountID = '".$_SESSION['accountID']."';";
             $result = mysqli_query($db,$sql);
             echo '<script>alert("You default payment method has been changed!")</script>';
-            header("Refresh:0");
+            $selectedMOP = $radioVal;
         }
     }elseif (isset($_POST['delete'])){
         $accountID = $_SESSION['accountID'];
