@@ -3,24 +3,32 @@ require 'config.php';
 session_start();
 
 $sql = "SELECT selectedMOP
-            FROM `1user`
-            WHERE accountID = '".$_SESSION['accountID']."';";
+        FROM `1User`
+        WHERE accountID = '".$_SESSION['accountID']."';";
 $result = mysqli_query($db,$sql);
 $row = mysqli_fetch_array($result);
 $selectedMOP = $row['selectedMOP'];
 
 $unappliedJob=$accountID=$unappliedJob_err=$unapply_result="";
 // Processing form data when form is submitted
-if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
+if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
 {
-    $radioVal = $_POST["defaultMOP"];
+    if(isset($_POST['changeDefault'])){
+        $radioVal = $_POST["defaultMOP"];
 
-    if($radioVal != $selectedMOP){
-        $sql = "UPDATE 1user  SET selectedMOP = ".$radioVal." WHERE accountID = '".$_SESSION['accountID']."';";
+        if($radioVal != $selectedMOP){
+            $sql = "UPDATE 1User  SET selectedMOP = ".$radioVal." WHERE accountID = '".$_SESSION['accountID']."';";
+            $result = mysqli_query($db,$sql);
+            echo '<script>alert("You default payment method has been changed!")</script>';
+            $selectedMOP = $radioVal;
+        }
+    }elseif (isset($_POST['delete'])){
+        $accountID = $_SESSION['accountID'];
+        $mopDis = $_POST['delete'];
+        $sql = "DELETE FROM `1MethodOfPayment` WHERE accountID = '".$accountID."' AND mopDis = ".$mopDis.";";
         $result = mysqli_query($db,$sql);
-        echo '<script>alert("You default payment method has been changed!")</script>';
-        header("Refresh:0");
     }
+
 
 }
 
@@ -30,7 +38,8 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <script src="functions.js"></script>
+<!--    <script src="functions.js"></script>-->
+
 </HEAD>
 
 <BODY>
@@ -51,6 +60,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                         <th>Holder's Name</th>
                         <th>Expiration Data</th>
                         <th>Default Method</th>
+                        <th>Delete</th>
 
                     </tr>
                     </thead>
@@ -59,7 +69,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 
                     <?php
                     $sql = "SELECT mopDis,methodType, cardNum, holdersName, expirationDate
-                            FROM `1methodofpayment`
+                            FROM `1MethodOfPayment`
                             WHERE accountID = '".$_SESSION['accountID']."';";
                     $result = mysqli_query($db,$sql);
                     $counter = 1;
@@ -74,13 +84,16 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                         $myCardNum = $myCardNum.substr($row['cardNum'], -4);
                         echo "<td>".$myCardNum."</td>";
                         echo "<td>".$row['holdersName']."</td>";
-                        echo "<td>".$row['expirationDate']."</td>";
+                        $expDate = substr($row['expirationDate'], 0,7);
+                        echo "<td>".$expDate."</td>";
 
                         if($selectedMOP == $row['mopDis']){
                             echo "<td><input type=\"radio\" name=\"defaultMOP\" value=\"".$row['mopDis']."\" checked></td>";
                         }else{
                             echo "<td><input type=\"radio\" name=\"defaultMOP\" value=\"".$row['mopDis']."\"></td>";
                         }
+
+                        echo "<td><button class='deleteMOPButton' name='delete' value='".$row['mopDis']."'>Delete</button></td>";
 
                         echo "</tr>";
                         $counter ++;
@@ -91,7 +104,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 
                     </tbody>
                 </table>
-                <input type="submit" class="btn btn-primary" value="Change Default">
+                <input type="submit" name="changeDefault" class="btn btn-primary" value="Change Default">
             </form>
 
         </td>
@@ -112,3 +125,4 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 
 </BODY>
 </HTML>
+<!--<script src="method_of_payment.js"></script>-->
