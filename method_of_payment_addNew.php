@@ -59,7 +59,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
                 mysqli_stmt_execute($stmt);
                 echo $stmt->error;
                 mysqli_stmt_close($stmt);
-                header("location: " . $_SESSION["lastPage"]);
+                header("location: " . $lastPage);
             }
 //            else {
 //                echo $db->error;
@@ -98,7 +98,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
 
                 mysqli_stmt_execute($stmt);
                 mysqli_stmt_close($stmt);
-                header("location: " . $_SESSION["lastPage"]);
+                header("location: " . $lastPage);
             } else {
 //                echo $db->error;
             }
