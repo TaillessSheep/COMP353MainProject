@@ -28,10 +28,8 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
         $sql = "DELETE FROM `1MethodOfPayment` WHERE accountID = '".$accountID."' AND mopDis = ".$mopDis.";";
         $result = mysqli_query($db,$sql);
     }
-
-
 }
-
+header("method_of_payment_edit.php");
 ?>
 <HTML>
 <HEAD>
@@ -39,7 +37,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
 <!--    <script src="functions.js"></script>-->
-
 </HEAD>
 
 <BODY>
@@ -61,6 +58,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
                         <th>Expiration Data</th>
                         <th>Default Method</th>
                         <th>Delete</th>
+                        <th>Edit</th>
 
                     </tr>
                     </thead>
@@ -94,6 +92,8 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
                         }
 
                         echo "<td><button class='deleteMOPButton' name='delete' value='".$row['mopDis']."'>Delete</button></td>";
+
+                        echo "<td><a href=\"method_of_payment_edit.php?mopDis=".$row['mopDis']."\">Edit</a></td>";
 
                         echo "</tr>";
                         $counter ++;

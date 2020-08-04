@@ -2,6 +2,7 @@
 require 'config.php'; //TODO UNCOMMENT
 session_start();
 $lastPage = $_SESSION["lastPage"];
+$_SESSION["lastPage"] = "";
 $creditCardNumber = $holderName1 = $holderName2 = $expDate = $checkingAccountNum = "";
 $methodType_err = $creditCardNumber_err = $holderName_err1 = $holderName_err2 = $expDate_err = $checkingAccountNum_err = $login_error = "";
 
@@ -186,7 +187,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
 </div>
 </body>
 </html>
-<script src="method_of_payment_addNew_func.js"></script>
+<script src="method_of_payment_addNew.js"></script>
 
 
 
