@@ -1,5 +1,6 @@
 <?php
 require 'config.php';
+session_start();
 ?>
 <HTML>
 <HEAD>
@@ -20,8 +21,9 @@ require 'config.php';
 <?php require 'employer_dashboard_navbar.php' ;//nav bar
 $accountID = $_SESSION['accountID'];
 $profileName= $_SESSION['profileName'];
-$sql = "SELECT COUNT(*) AS number_jobs FROM 1Job WHERE employerID=".$accountID;
+$sql = "SELECT COUNT(*) AS number_jobs FROM 1Job WHERE employerID = '".$_SESSION['accountID']."';";
 $result = mysqli_query($db,$sql);
+if($result==false){echo $db->error;}
 $row = mysqli_fetch_array($result)
 ?>
 <!-- Masthead-->
