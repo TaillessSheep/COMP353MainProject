@@ -152,7 +152,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
 </head>
 <body>
 <div class="wrapper">
-    <h2>New Payment Method</h2>
+    <h2>Modify Method of Payment</h2>
     <form name='submitform' action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 <!--    credit card block-->
         <div id="creditInfo" style="display: <?php if($methodType=="credit")echo "block"; else echo "none"?>">
