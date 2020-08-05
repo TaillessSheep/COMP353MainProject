@@ -40,24 +40,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
         }else{
-            $error="Your account is deactivated. Contact an administrator.";
+            $login_error="Your account is deactivated. Contact an administrator.";
         }
-
-
-        if($row['activation']==1 && $row['isEmployer']==1) //Valid employer account
-        {
-            $_SESSION['accountID']=$accountID;
-            header("location: employer_dashboard.php");
-        }
-        elseif($row['activation']==1 && $row['isEmployer']==0) //Valid JS account
-        {
-            $_SESSION['accountID']=$accountID;
-            header("location: user_dashboard.php");
-        }
-
 
     }else {
-        $error = "Your Login Name or Password is invalid";
+        $login_error = "Your Login Name or Password is invalid";
     }
 }
 ?>
