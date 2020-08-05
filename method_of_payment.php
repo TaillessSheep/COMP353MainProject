@@ -29,7 +29,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
         $result = mysqli_query($db,$sql);
     }
 }
-header("method_of_payment_edit.php");
 ?>
 <HTML>
 <HEAD>
