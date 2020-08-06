@@ -27,10 +27,10 @@ $row = mysqli_fetch_array($result)
 <!-- Masthead-->
 <header class="masthead" style="height: 69%;">
     <div class="container">
-        <div class="masthead-subheading"> <?php echo "Welcome, ". $profileName."."?> </div>
+        <div class="masthead-subheading"> <?php echo "Welcome ". $profileName."."?> </div>
         <br>
         <br>
-        <div class="masthead-subheading"> <?php echo "You have ". $row['number_jobs']." jobs posted."?> </div>
+        <div class="masthead-subheading"> <?php echo "You have applied to ". $row['number_jobs']." job(s)."?> </div>
     </div>
 </header>
 
