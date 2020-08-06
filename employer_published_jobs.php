@@ -2,6 +2,7 @@
 require 'config.php';
 session_start();
 $accountID=$_SESSION['accountID'];
+$appliedJob_err=$apply_result='';
 // Processing form data when form is submitted
 
 ?>
