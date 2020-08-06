@@ -180,7 +180,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 </HEAD>
 
 <BODY>
-<?php require 'user_dashboard_navbar.php' //nav bar
+<?php require 'employer_dashboard_navbar.php' //nav bar
 ?>
 <h2 style=" padding-left: 25px;" >Modify Profile</h2>
 <div class="wrapper" style="width: 20%; padding-left: 25px;" >
