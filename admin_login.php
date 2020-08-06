@@ -1,5 +1,5 @@
 <?php
-require 'config.php'; //TODO UNCOMMENT
+require 'config.php';
 // Define variables and initialize with empty values
 $accountID = $username = $password = $confirm_password = "";
 $username_err = $password_err = $confirm_password_err = "";
@@ -16,14 +16,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $accountID = mysqli_real_escape_string($db,$_POST['accountID']);
     $password = mysqli_real_escape_string($db,$_POST['password']);
 
-    $sql = "SELECT accountID,profileName FROM 1Account Ac ,1Admin Ad WHERE ad.accountID = ac.accountID AND accountID = '$accountID' and password = '$password'";
+    $sql = "SELECT Ac.accountID,profileName FROM 1Account Ac ,1Admin Ad WHERE Ad.accountID = Ac.accountID AND Ac.accountID = '$accountID' and password = '$password'";
     $result = mysqli_query($db,$sql);
     $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
     $count = mysqli_num_rows($result);
     $profilename= $row['profileName'];
     // If result matched $accountID and $password, table row must be 1 row
     if($count == 1) {
-        header("location: employer_dashboard.php");
+        $_SESSION['accountID']  = $accountID;
+        $_SESSION['profileName']=$profilename;
+        header("location: admin_dashboard.php");
     }else {
         $login_error = "Your Login Name or Password is invalid";
     }
