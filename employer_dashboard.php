@@ -1,5 +1,5 @@
 <?php
-require 'config.php'; //TODO UNCOMMENT
+//require 'config.php'; //TODO UNCOMMENT
 session_start();
 ?>
 <HTML>
@@ -10,14 +10,14 @@ session_start();
 </HEAD>
 
 <BODY>
-<?php require 'user_dashboard_navbar.php' //nav bar
+<?php require 'employer_dashboard_navbar.php' //nav bar
 ?>
 <div align="center">
     <h2>
         <br>
         <?php
-        $profilename = $_SESSION['profileName'];
-        echo 'Welcome '. $profilename ."! Please select an option above";
+        $accountID = $_SESSION['accountID'];
+        echo 'Hello '. $accountID ."! Please select an option above";
         ?>
     </h2>
 

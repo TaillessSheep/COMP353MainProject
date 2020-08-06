@@ -99,3 +99,5 @@ function getMoreJobInfoCollapse(jobID){
     formElement = document.getElementById('jobApplyForm');
     formElement.style.visibility='hidden';
 }
+
+

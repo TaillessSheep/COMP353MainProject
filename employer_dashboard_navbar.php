@@ -3,16 +3,15 @@
        */
 ?>
 <div class="navbar">
-
-    <a href="user_dashboard.php"><i class="material-icons" style="color: white">home</i></a>
-    <a href="user_job_portal.php">Search Jobs</a>
-    <a href="user_applied_jobs.php">My Applications</a>
+    <a href="employer_dashboard.php"><i class="material-icons" style="color: white">home</i></a>
+    <a href="employer_job_portal.php">Search Jobs</a>
+    <a href="employer_published_jobs.php">My Published Jobs</a>
     <div class="dropdown">
         <button class="dropbtn">Modify Profile
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content">
-            <a href="user_modify_profile.php">Update Profile</a>
+            <a href="employer_modify_profile.php">Update Profile</a>
             <a href="delete_profile.php">Delete Profile</a>
         </div>
     </div>

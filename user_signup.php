@@ -4,7 +4,7 @@ require "config.php"; //TODO UNCOMMENT
 
 // Define variables and initialize with empty values
 $accountID = $password = $confirm_password = $payment_info = $realname =$phone = $email= $MOP= $isAutoPay= $account_type=$selectedMOP='';
-$accountID_err = $password_err = $confirm_password_err = $payment_info_err = $realname_err = $phone_err= $email_err= $MOP_err= $isAutoPay= $account_type_err="";
+$accountID_err = $password_err = $confirm_password_err = $payment_info_err = $realname_err = $phone_err= $email_err= $MOP_err= $isAutoPay_err= $account_type_err="";
 $charge="";
 
 // Processing form data when form is submitted
@@ -138,15 +138,16 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
         empty($payment_info_err) && empty($account_type_err))
     {
         // Prepare an insert statement in account table
-        $sql = "INSERT INTO 1Account (accountID, password) VALUES (?, ?)";
+        $sql = "INSERT INTO 1Account (accountID, password,profileName) VALUES (?, ?, ?)";
         if($stmt = mysqli_prepare($db, $sql))
         {
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $param_accountID, $param_password);
+            mysqli_stmt_bind_param($stmt, "sss", $param_accountID, $param_password,$param_realname);
 
             // Set parameters
             $param_accountID = $accountID;
             $param_password = $password;
+            $param_realname = $realname;
 
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt))
@@ -336,7 +337,7 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
             <input type="submit" class="btn btn-primary" value="Submit">
             <input type="reset" class="btn btn-default" value="Reset">
         </div>
-        <p>Already have an account? <a href="user_login.php">Login here</a>.</p>
+        <p>Already have an account? <a href="login.php">Login here</a>.</p>
     </form>
 </div>
 </body>

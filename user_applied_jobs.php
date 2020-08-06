@@ -1,63 +1,48 @@
 <?php
 require 'config.php';
 session_start();
-$appliedJob=$accountID=$appliedJob_err=$apply_result="";
+$unappliedJob=$accountID=$unappliedJob_err=$unapply_result="";
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
     // Validate jobID
     if (empty(trim($_POST["appliedJob"])))
     {
-        $appliedJob_err = "There was an error applying to the job";
+        $unappliedJob_err = "There was an error removing application to the job";
     } else
     {
-        $appliedJob = trim($_POST["appliedJob"]);
+        $unappliedJob = trim($_POST["appliedJob"]);
     }
     // Validate ID
     if (empty(trim($_SESSION["accountID"])))
     {
-        $appliedJob_err = "There was an error applying to the job";
+        $unappliedJob_err = "There was an error removing application to the job";
     } else
     {
         $accountID = trim($_SESSION["accountID"]);
     }
-
-    //Verify if user can apply to this job given his account category
-    $sql = "SELECT premiumOpt, COUNT(*) AS total_applications FROM `1Applied` A, 1User U
-    WHERE jobSeekerID=accountID AND jobSeekerID = '".$_SESSION['accountID']."'";
-    $result = mysqli_query($db,$sql);
-    $row = mysqli_fetch_array($result);
-    if($row['premiumOpt'] == 'basic')
+    if (empty($unappliedJob_err))
     {
-        $appliedJob_err="You cannot apply to job with a basic account. Upgrade your account to apply to this job!";
-    }
-    elseif($row['premiumOpt'] == 'prime' && $row['total_applications']>5)
-    {
-        $appliedJob_err="You have already applied to 5 jobs. Upgrade your account to apply to this job!";
-    }
-    
-    if (empty($appliedJob_err))
-    {
-        $sql = "INSERT INTO `1Applied` (jobID, jobSeekerID,status) VALUES (?, ?, ?)";
+        $sql = "DELETE FROM `1Applied` WHERE jobID= ? AND jobSeekerID = ?";
         if ($stmt = mysqli_prepare($db, $sql))
         {
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sss", $param_jobID, $param_accountID, $param_status);
+            mysqli_stmt_bind_param($stmt, "ss",  $param_jobID,$param_accountID);
 
             // Set parameters
-            $param_jobID = $appliedJob;
+            $param_jobID = $unappliedJob;
             $param_accountID = $accountID;
-            $param_status = 1;
 
             if (mysqli_stmt_execute($stmt))
             {
-                $apply_result = 'Your have sucessfully applied to job #.'.$appliedJob;
+                $apply_result = 'Your have sucessfully applied to job #.'.$unappliedJob;
             } else
             {
-                $appliedJob_err = "Something went wrong. You may have already applied to this job.";
+                $unappliedJob_err = "Something went wrong. You may have already applied to this job.";
             }
         }
     }
+
 }
 ?>
 <HTML>
@@ -73,6 +58,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 <?php require 'user_dashboard_navbar.php' //nav bar
 ?>
 
+<H1>My applications</H1>
 <table style="width: 100%;">
     <tr>
         <td style="text-align: center;" >
@@ -93,7 +79,9 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             </tfoot>
             <tbody id="tableBody">
             <?php
-            $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job";
+            $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID 
+                    FROM 1Job J, `1Applied` A
+                    WHERE J.jobID = A.jobID";
             $result = mysqli_query($db,$sql);
             while ($row = mysqli_fetch_array($result)) {
                 ?>
@@ -120,16 +108,18 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 </td>
 <td style="text-align: center">
     <div>
-        <button onclick="searchById()">Search job by ID </button>
+        <button onclick="searchById()">Search applications by ID </button>
         <input type="text" id="jobID">
         <br>
         <br>
-        <button onclick="searchByCategory()">Search job by category </button>
+        <button onclick="searchByCategory()">Search applications by category </button>
         <select id="category" size="1">
             <option value=''hidden>Choose Category</option>
             <option value=''>All Categories</option>
             <?php
-            $sql = "SELECT category FROM 1Job";
+            $sql = "SELECT category 
+                    FROM 1Job J, 1Applied A
+                    WHERE J.jobID = A.jobID";
             $result = mysqli_query($db,$sql);
             while ($row = mysqli_fetch_array($result)) {
                 echo "<option value='".$row['category']."'>".$row['category']."</option>";
@@ -139,8 +129,8 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         <br>
     </div>
     <div>
-        <span class="help-block"><?php echo $appliedJob_err; ?></span>
-        <span class="help-block" style="color: green"><?php echo $apply_result; ?></span>
+        <span class="help-block"><?php echo $unappliedJob_err; ?></span>
+        <span class="help-block" style="color: green"><?php echo $unapply_result; ?></span>
     </div>
 </td>
 </tr>
@@ -152,7 +142,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             <div class="form-group">
                 <input type="text" style="visibility: hidden" id= 'appliedJob' name="appliedJob" value="">
                 <br>
-                <input type="submit" class="btn btn-primary" value="Apply" align="left">
+                <input type="submit" class="btn btn-primary" value="Remove Application" align="left">
             </div>
 
         </form>

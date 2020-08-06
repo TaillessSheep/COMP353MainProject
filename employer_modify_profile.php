@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require 'config.php'; 
 // Define variables and initialize with empty values
 $old_accountID = $new_accountID=$old_password = $new_password = $new_category="";
 $old_accountID_err = $new_accountID_err = $old_password_err = $new_password_err = $new_category_err="";
@@ -124,21 +124,18 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         {
             $new_category_err="Please confirm your new category choice";
         }
-        //Check if this new category is legal with their # of current applications
-        elseif(trim($_POST["new_category"]) == 'basic' || trim($_POST["new_category"])=='prime')
+        //If downgrades to prime, we must check there are no more than 5 jobs posted
+        elseif(trim($_POST["category_confirm"])=='prime')
         {
-            $sql = "SELECT COUNT(*) AS total_applications FROM `1Applied` WHERE jobSeekerID = '".$_SESSION['accountID']."'";
+            $sql = "SELECT COUNT(*) AS total_job_posts FROM 1Job WHERE accountID = '".$_SESSION['accountID']."'";
             $result = mysqli_query($db,$sql);
-            $row = mysqli_fetch_array($result);
-            if(trim($_POST["new_category"]) == 'basic' && $row['total_applications']>0)
+            $row=mysqli_fetch_array($result);
+            if($row['total_job_posts']>5)
             {
-                $new_category_err="You may not change your account to basic as you have open job applications.";
-            }
-            elseif(trim($_POST["new_category"]) == 'prime' && $row['total_applications']>5)
-            {
-                $new_category_err="You may not change your account to prime as you have more than 5 open job applications.";
+                $new_category_err="You may not change your account to Prime as you have more than 5 job posts published.";
             }
         }
+
         if(empty($new_category_err))
         {
             //Update the category
@@ -219,9 +216,8 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             <label>Account Type:   </label>
             <select name="new_category" size="1">
                 <option value="" selected disabled hidden>Choose Account Type</option>
-                <option value="basic">Basic (Free!) </option>
-                <option value="prime">Prime (10$/Month)</option>
-                <option value="gold">Gold (20$/Month)</option>
+                <option value="prime">Prime (50$/Month)</option>
+                <option value="gold">Gold (100$/Month)</option>
             </select>
             <label for="confirm">Confirm Category Change? </label>
             <input type="radio" id="category_confirm" name="category_confirm" value="category_confirm">
@@ -245,9 +241,8 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 <h4 class="modal-title">Account Category Details</h4>
             </div>
             <div class="modal-body">
-                <p>Basic: You may view as many jobs as you wish, but you cannot apply. Fees: Free!</p>
-                <p>Prime: You may view as many jobs as you wish and apply for up to 5 jobs. Fees: 10$ monthly.</p>
-                <p>Gold (Recommended): You may view and apply to as many jobs as you wish! Fees: 20$ monthly.</p>
+                <p>Prime: You may post up to 5 jobs simultaneously. Fees: 50$ monthly.</p>
+                <p>Gold (Recommended): You may post as many jobs as you wish! Fees: 100$ monthly.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
