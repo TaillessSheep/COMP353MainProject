@@ -6,6 +6,31 @@ $unappliedJob=$accountID=$unappliedJob_err=$unapply_result="";
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
+    //Accept or refuse offer
+    if(isset($_POST['offerDecision']))
+    {
+        $accountID=$_SESSION['accountID'];
+        $decisionString=$_POST['offerDecision'];
+        $decision = explode("#",$decisionString)[0];
+        $jobID = explode("#",$decisionString)[1];
+        $sql = "UPDATE 1Applied SET status='".$decision."' WHERE jobID='".$jobID."' AND jobSeekerID='".$accountID."'";
+        if(mysqli_query($db,$sql))
+        {
+            if($decision=='accept')
+            {
+                $unapply_result='You have succesfully accepted this offer! The employer will contact you shortly.';
+            }
+            elseif($decision=='refuse')
+            {
+                $unapply_result='You have succesfully declined this offer! The employer will contact you shortly.';
+            }
+
+        }
+        else
+        {
+            $unapply_result='Something went wrong. Offer was not accepted. Please try again later';
+        }
+    }
     //Application to a job
     if(isset($_POST['appliedJob']))
     {
@@ -39,10 +64,10 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 
                 if (mysqli_stmt_execute($stmt))
                 {
-                    $apply_result = 'Your have sucessfully applied to job #.' . $unappliedJob;
+                    $unapply_result = 'Your have sucessfully withdrawn you application to job #.' . $unappliedJob;
                 } else
                 {
-                    $unappliedJob_err = "Something went wrong. You may have already applied to this job.";
+                    $unappliedJob_err = "Something went wrong. Please try again later.";
                 }
             }
         }
@@ -187,9 +212,10 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                            <form method='post'>
                            <select name='offerDecision'>
                            <option value=''hidden>Decision</option>
-                           <option value='accept".$row['jobID']."'>Accept Offer</option>
-                           <option value='refuse".$row['jobID']."''>Refuse Offer</option>
+                           <option value='accept#".$row['jobID']."'>Accept Offer</option>
+                           <option value='refuse#".$row['jobID']."''>Refuse Offer</option>
                             </select>
+                            <input type='submit' value='Send'>
                             </form>
                            </td>";
                 }
