@@ -33,3 +33,9 @@ $row = mysqli_fetch_array($result)
         <div class="masthead-subheading"> <?php echo "You have ". $row['number_jobs']." jobs posted."?> </div>
     </div>
 </header>
+
+<!-- Map image style-->
+<section class="page-section" id="contact" style=" width: 100%; height: 29%">
+    <div class="container">
+    </div>
+</section>
