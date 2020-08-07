@@ -1,5 +1,5 @@
 <?php
-require 'config.php'; //TODO UNCOMMENT
+require 'config.php';
 // Define variables and initialize with empty values
 $accountID = $username = $password = $confirm_password = "";
 $username_err = $password_err = $confirm_password_err = "";
@@ -16,33 +16,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $accountID = mysqli_real_escape_string($db,$_POST['accountID']);
     $password = mysqli_real_escape_string($db,$_POST['password']);
 
-    $sql = "SELECT accountID,profileName FROM 1Account WHERE accountID = '$accountID' and password = '$password'";
+    $sql = "SELECT Ac.accountID,profileName FROM 1Account Ac ,1Admin Ad WHERE Ad.accountID = Ac.accountID AND Ac.accountID = '$accountID' and password = '$password'";
     $result = mysqli_query($db,$sql);
     $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
     $count = mysqli_num_rows($result);
     $profilename= $row['profileName'];
     // If result matched $accountID and $password, table row must be 1 row
     if($count == 1) {
-        // Verify if user's account is activated and if it is an employer or JS
-        $sql = "SELECT status,isEmployer FROM 1User WHERE accountID= '$accountID'";
-        $result = mysqli_query($db,$sql);
-        $row = mysqli_fetch_array($result);
-        if($row['status']=='activated'){
-            $_SESSION['accountID']  = $accountID;
-            $_SESSION['profileName']=$profilename;
-            if( $row['isEmployer']==1) //Valid employer account
-            {
-                header("location: employer_dashboard.php");
-            }
-            elseif($row['isEmployer']==0) //Valid JS account
-            {
-                header("location: user_dashboard.php");
-            }
-
-        }else{
-            $login_error="Your account is deactivated. Contact an administrator.";
-        }
-
+        $_SESSION['accountID']  = $accountID;
+        $_SESSION['profileName']=$profilename;
+        header("location: admin_dashboard.php");
     }else {
         $login_error = "Your Login Name or Password is invalid";
     }
@@ -52,7 +35,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up</title>
+    <title>Login</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
     <style type="text/css">
         body{ font: 14px sans-serif; }
@@ -79,12 +62,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="submit" class="btn btn-primary" value="Submit">
             <input type="reset" class="btn btn-default" value="Reset">
         </div>
-        <p>Not registered yet? <a href="New_user_choose_type.php">Sign up here</a>.</p>
         <p><a href="forgot_password.php">Forgot your password?</a>.</p>
     </form>
 </div>
 </body>
 </html>
+
 
 
 

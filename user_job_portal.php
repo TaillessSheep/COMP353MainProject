@@ -5,56 +5,58 @@ $appliedJob=$accountID=$appliedJob_err=$apply_result="";
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
-    // Validate jobID
-    if (empty(trim($_POST["appliedJob"])))
+    if(isset($_POST["appliedJob"]))
     {
-        $appliedJob_err = "There was an error applying to the job";
-    } else
-    {
-        $appliedJob = trim($_POST["appliedJob"]);
-    }
-    // Validate ID
-    if (empty(trim($_SESSION["accountID"])))
-    {
-        $appliedJob_err = "There was an error applying to the job";
-    } else
-    {
-        $accountID = trim($_SESSION["accountID"]);
-    }
-
-    //Verify if user can apply to this job given his account category
-    $sql = "SELECT premiumOpt, COUNT(*) AS total_applications FROM `1Applied` A, 1User U
-    WHERE jobSeekerID=accountID AND jobSeekerID = '".$_SESSION['accountID']."'";
-    $result = mysqli_query($db,$sql);
-    $row = mysqli_fetch_array($result);
-    if($row['premiumOpt'] == 'basic')
-    {
-        $appliedJob_err="You cannot apply to job with a basic account. Upgrade your account to apply to this job!";
-    }
-    elseif($row['premiumOpt'] == 'prime' && $row['total_applications']>5)
-    {
-        $appliedJob_err="You have already applied to 5 jobs. Upgrade your account to apply to this job!";
-    }
-    
-    if (empty($appliedJob_err))
-    {
-        $sql = "INSERT INTO `1Applied` (jobID, jobSeekerID,status) VALUES (?, ?, ?)";
-        if ($stmt = mysqli_prepare($db, $sql))
+        // Validate jobID
+        if (empty(trim($_POST["appliedJob"])))
         {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sss", $param_jobID, $param_accountID, $param_status);
+            $appliedJob_err = "There was an error applying to the job";
+        } else
+        {
+            $appliedJob = trim($_POST["appliedJob"]);
+        }
+        // Validate ID
+        if (empty(trim($_SESSION["accountID"])))
+        {
+            $appliedJob_err = "There was an error applying to the job";
+        } else
+        {
+            $accountID = trim($_SESSION["accountID"]);
+        }
 
-            // Set parameters
-            $param_jobID = $appliedJob;
-            $param_accountID = $accountID;
-            $param_status = 1;
+        //Verify if user can apply to this job given his account category
+        $sql = "SELECT premiumOpt, COUNT(*) AS total_applications FROM `1Applied` A, 1User U
+    WHERE jobSeekerID=accountID AND jobSeekerID = '" . $_SESSION['accountID'] . "'";
+        $result = mysqli_query($db, $sql);
+        $row = mysqli_fetch_array($result);
+        if ($row['premiumOpt'] == 'basic')
+        {
+            $appliedJob_err = "You cannot apply to job with a basic account. Upgrade your account to apply to this job!";
+        } elseif ($row['premiumOpt'] == 'prime' && $row['total_applications'] > 5)
+        {
+            $appliedJob_err = "You have already applied to 5 jobs. Upgrade your account to apply to this job!";
+        }
 
-            if (mysqli_stmt_execute($stmt))
+        if (empty($appliedJob_err))
+        {
+            $sql = "INSERT INTO `1Applied` (jobID, jobSeekerID,status) VALUES (?, ?, ?)";
+            if ($stmt = mysqli_prepare($db, $sql))
             {
-                $apply_result = 'Your have sucessfully applied to job #.'.$appliedJob;
-            } else
-            {
-                $appliedJob_err = "Something went wrong. You may have already applied to this job.";
+                // Bind variables to the prepared statement as parameters
+                mysqli_stmt_bind_param($stmt, "sss", $param_jobID, $param_accountID, $param_status);
+
+                // Set parameters
+                $param_jobID = $appliedJob;
+                $param_accountID = $accountID;
+                $param_status = 1;
+
+                if (mysqli_stmt_execute($stmt))
+                {
+                    $apply_result = 'Your have sucessfully applied to job #.' . $appliedJob;
+                } else
+                {
+                    $appliedJob_err = "Something went wrong. You may have already applied to this job.";
+                }
             }
         }
     }
@@ -72,11 +74,11 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 <BODY>
 <?php require 'user_dashboard_navbar.php' //nav bar
 ?>
-
+<H1>Job Portal</H1>
 <table style="width: 100%;">
     <tr>
         <td style="text-align: center;" >
-            <table class="blueTable" style="margin-left: 3%"">
+            <table class="blueTable" style="margin-left: 3%;"">
             <thead>
             <tr>
                 <th>ID</th>
@@ -88,12 +90,80 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 <th>Details</th>
             </tr>
             </thead>
-            <tfoot>
-
-            </tfoot>
             <tbody id="tableBody">
             <?php
-            $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job";
+            //Reset table to all applications
+            if(isset($_POST['resetTable']))
+            {
+                $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job";
+                $result = mysqli_query($db,$sql);
+            }
+            //Search by ID a job
+            elseif(isset($_POST['searchID']))
+            {
+                $jobID = $_POST['jobID'];
+                if(empty($jobID))
+                {
+                    $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job";
+                }
+                else
+                {
+                    $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job
+                        WHERE jobID='".$jobID."'";
+                }
+
+                $result = mysqli_query($db,$sql);
+            }
+            // Search jobs by category
+            elseif(isset($_POST['searchCategory']))
+            {
+                $category = $_POST['category'];
+                if($category == 'all' || empty($category))
+                {
+                    $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job";
+                }
+                else
+                {
+                    $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job
+                        WHERE category='".$category."'";
+                }
+                $result = mysqli_query($db,$sql);
+            }
+            //Search jobs by post date
+            elseif(isset($_POST['searchDate']))
+            {
+                $fromDate = $_POST['date_from'];
+                $toDate = $_POST['date_to'];
+                //No date limit
+                if(empty($fromDate) and empty($toDate))
+                {
+                    $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job";
+                }
+                // no lower date limit
+                elseif(empty($fromDate))
+                {
+                    $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job
+                        WHERE postDate<='".$toDate."'";
+                }
+                // no upper date limit
+                elseif(empty($toDate))
+                {
+                    $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job
+                        WHERE postDate>='".$fromDate."'";
+                }
+                // 2 side bounded date span
+                else{
+                    $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job
+                        WHERE postDate>='".$fromDate."'AND postDate<='".$toDate."'";
+                }
+                $result = mysqli_query($db,$sql);
+            }
+            //Default table. All jobs
+            else{
+                $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job";
+                $result = mysqli_query($db,$sql);
+            }
+
             $result = mysqli_query($db,$sql);
             while ($row = mysqli_fetch_array($result)) {
                 ?>
@@ -119,25 +189,62 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 </table>
 </td>
 <td style="text-align: center">
-    <div>
-        <button onclick="searchById()">Search job by ID </button>
-        <input type="text" id="jobID">
-        <br>
-        <br>
-        <button onclick="searchByCategory()">Search job by category </button>
-        <select id="category" size="1">
-            <option value=''hidden>Choose Category</option>
-            <option value=''>All Categories</option>
-            <?php
-            $sql = "SELECT category FROM 1Job";
-            $result = mysqli_query($db,$sql);
-            while ($row = mysqli_fetch_array($result)) {
-                echo "<option value='".$row['category']."'>".$row['category']."</option>";
-            }
-            ?>
-        </select>
-        <br>
-    </div>
+    <table style="margin-left: 50px; border-spacing: 150px; text-align: left">
+        <tr>
+            <form method="post">
+                <td style="padding-bottom: 1em;">
+                    <input type="submit" value="Reset" name="resetTable" style="min-width: 170px">
+                </td>
+                <td style="padding-bottom: 1em; padding-left: 1em">
+                </td>
+            </form>
+        </tr>
+        <tr>
+            <form method="post">
+                <td style="padding-bottom: 1em;">
+                    <input type="submit" value="Search By ID" name="searchID" style="min-width: 170px">
+                </td>
+                <td style="padding-bottom: 1em; padding-left: 1em">
+                    <input type="text"  name="jobID" id="jobID" style="min-width: 150px">
+                </td>
+            </form>
+        </tr>
+        <tr>
+            <form method="post">
+                <td style="padding-bottom: 1em;">
+                    <input type="submit" value="Search By Category" name="searchCategory" style="min-width: 170px">
+                </td>
+                <td style="padding-bottom: 1em;padding-left: 1em">
+                    <select name="category" id="category" size="1" style="min-width: 150px">
+                        <option value=''hidden>Choose Category</option>
+                        <option value='all'>All Categories</option>
+                        <?php
+                        $sql = "SELECT category 
+                            FROM 1Job J, 1Applied A
+                            WHERE J.jobID = A.jobID";
+                        $result = mysqli_query($db,$sql);
+                        while ($row = mysqli_fetch_array($result)) {
+                            echo "<option value='".$row['category']."'>".$row['category']."</option>";
+                        }
+                        ?>
+                    </select>
+                </td>
+            </form>
+        </tr>
+        <tr>
+            <form method="post">
+                <td style="padding-bottom: 1em;">
+                    <input type="submit" name="searchDate" value="Search By Date" style="min-width: 170px">
+                </td>
+                <td style="padding-bottom: 1em;padding-left: 1em">
+                    <label>From</label>
+                    <input type="date" name="date_from" id="date_from" style="min-width: 150px">
+                    <label>To</label>
+                    <input type="date" name= "date_to" id="date_to" style="min-width: 150px">
+                </td >
+            </form>
+        </tr>
+    </table>
     <div>
         <span class="help-block"><?php echo $appliedJob_err; ?></span>
         <span class="help-block" style="color: green"><?php echo $apply_result; ?></span>
@@ -158,9 +265,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         </form>
     </td>
 </tr>
-
 </table>
-<br>
-
 </BODY>
 </HTML>
