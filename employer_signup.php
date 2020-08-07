@@ -6,6 +6,7 @@ require "config.php"; //TODO UNCOMMENT
 $accountID = $password = $confirm_password = $payment_info = $realname =$phone = $email= $MOP= $isAutoPay= $account_type=$selectedMOP='';
 $accountID_err = $password_err = $confirm_password_err = $payment_info_err = $realname_err = $phone_err= $email_err= $MOP_err= $isAutoPay= $account_type_err="";
 $charge="";
+$isAutoPay_err = '';
 
 // Processing form data when form is submitted
 if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
@@ -150,7 +151,7 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
             if(mysqli_stmt_execute($stmt))
             {
                 //Insertion in account was successfull. Prepare insert statement in Users
-                $sql = "INSERT INTO 1User (accountID, isEmployer,premiumOpt,charge,isAutoPay,selectedMOP,activation,paymentDate,email,phone) 
+                $sql = "INSERT INTO 1User (accountID, isEmployer,premiumOpt,charge,isAutoPay,selectedMOP,status,paymentDate,email,phone) 
                 VALUES (?,?,?,?,?,?,?,?,?,?)";
                 if($stmt = mysqli_prepare($db, $sql))
                 {
@@ -159,7 +160,7 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
                     // Bind variables to the prepared statement as parameters
                     mysqli_stmt_bind_param($stmt, "ssssssssss",
                         $param_accountID, $param_isEmployer, $param_premiumOpt, $param_charge,$param_isAutoPay,
-                        $param_selectedMOP, $param_activation,$param_paymentDate,$param_email,$param_phone);
+                        $param_selectedMOP, $param_status,$param_paymentDate,$param_email,$param_phone);
 
                     // Set parameters
                     $param_isEmployer=1; //Employer signup page, hence true
@@ -167,7 +168,7 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
                     $param_premiumOpt = $account_type;
                     $param_isAutoPay =$isAutoPay;
                     $param_selectedMOP =$selectedMOP;
-                    $param_activation = 1; // by default true
+                    $param_status = 'activated'; // by default true
                     $param_paymentDate=$str_date;
                     $param_email=$email;
                     $param_phone=$phone;
