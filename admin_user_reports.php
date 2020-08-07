@@ -100,7 +100,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             elseif(isset($_POST['seeOutstanding']))
             {
                 $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance 
-                        FROM oyc353_1.`1User`
+                        FROM `1User`
                         WHERE balance<'" . 0 ."'
                         ORDER BY isEmployer DESC";
                 $result = mysqli_query($db,$sql);
