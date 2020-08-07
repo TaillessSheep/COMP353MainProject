@@ -5,8 +5,9 @@ session_start();
 
 $sql = "SELECT accountID,charge,selectedMOP,email,balance,isAutoPay
         FROM 1User
-        WHERE activation = TRUE;";
+        WHERE status != 'deactivated';";
 $result = mysqli_query($db, $sql);
+echo $db->error;
 $counter = 1;
 while ($row = mysqli_fetch_array($result)) {
     $accountID      = $row['accountID'];
@@ -82,6 +83,24 @@ while ($row = mysqli_fetch_array($result)) {
     }
     // if not able to pay
     else{
+        $balance = $balance - $charge;
+        $status = 'frozen';
+
+        // update the DB
+        $sql = "UPDATE 1User
+                    SET balance=?, status = ?
+                    WHERE accountID=?";
+        if ($stmt = mysqli_prepare($db, $sql)) {
+            mysqli_stmt_bind_param($stmt, "sss", $param_balance, $param_status, $param_accountID);
+            // Set parameters
+            $param_balance      = $balance;
+            $param_status       = $status;
+            $param_accountID    = $accountID;
+
+            mysqli_stmt_execute($stmt);
+            echo $stmt->error;
+            mysqli_stmt_close($stmt);
+        }
     }
 
 }
