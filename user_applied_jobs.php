@@ -6,6 +6,31 @@ $unappliedJob=$accountID=$unappliedJob_err=$unapply_result="";
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
+    //Accept or refuse offer
+    if(isset($_POST['offerDecision']))
+    {
+        $accountID=$_SESSION['accountID'];
+        $decisionString=$_POST['offerDecision'];
+        $decision = explode("#",$decisionString)[0];
+        $jobID = explode("#",$decisionString)[1];
+        $sql = "UPDATE 1Applied SET status='".$decision."' WHERE jobID='".$jobID."' AND jobSeekerID='".$accountID."'";
+        if(mysqli_query($db,$sql))
+        {
+            if($decision=='accept')
+            {
+                $unapply_result='You have succesfully accepted this offer! The employer will contact you shortly.';
+            }
+            elseif($decision=='refuse')
+            {
+                $unapply_result='You have succesfully declined this offer! The employer will contact you shortly.';
+            }
+
+        }
+        else
+        {
+            $unapply_result='Something went wrong. Offer was not accepted. Please try again later';
+        }
+    }
     //Application to a job
     if(isset($_POST['appliedJob']))
     {
@@ -39,10 +64,10 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 
                 if (mysqli_stmt_execute($stmt))
                 {
-                    $apply_result = 'Your have sucessfully applied to job #.' . $unappliedJob;
+                    $unapply_result = 'Your have sucessfully withdrawn you application to job #.' . $unappliedJob;
                 } else
                 {
-                    $unappliedJob_err = "Something went wrong. You may have already applied to this job.";
+                    $unappliedJob_err = "Something went wrong. Please try again later.";
                 }
             }
         }
@@ -77,6 +102,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 <th>Employer</th>
                 <th>Category</th>
                 <th>Application Date</th>
+                <th>Application Status</th>
                 <th>Details</th>
             </tr>
             </thead>
@@ -85,7 +111,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             //Reset table to all applications
             if(isset($_POST['resetTable']))
             {
-                $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn 
+                $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status 
                         FROM 1Job J, `1Applied` A
                         WHERE J.jobID = A.jobID";
                 $result = mysqli_query($db,$sql);
@@ -96,13 +122,13 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 $jobID = $_POST['jobID'];
                 if(empty($jobID))
                 {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn 
+                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
                         WHERE J.jobID = A.jobID";
                 }
                 else
                 {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn 
+                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
                         WHERE J.jobID = A.jobID AND J.jobID='".$jobID."'";
                 }
@@ -115,13 +141,13 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 $category = $_POST['category'];
                 if($category == 'all' || empty($category))
                 {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn 
+                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
                         WHERE J.jobID = A.jobID";
                 }
                 else
                 {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn 
+                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
                         WHERE J.jobID = A.jobID AND category='".$category."'";
                 }
@@ -135,27 +161,27 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 //No date limit
                 if(empty($fromDate) and empty($toDate))
                 {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn 
+                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
                         WHERE J.jobID = A.jobID ";
                 }
                 // no lower date limit
                 elseif(empty($fromDate))
                 {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn 
+                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
                         WHERE J.jobID = A.jobID AND appliedOn<='".$toDate."'";
                 }
                 // no upper date limit
                 elseif(empty($toDate))
                 {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn 
+                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
                         WHERE J.jobID = A.jobID AND appliedOn>='".$fromDate."'";
                 }
                 // 2 side bounded date span
                 else{
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn 
+                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
                         WHERE J.jobID = A.jobID AND appliedOn>='".$fromDate."'AND appliedOn<='".$toDate."'";
                 }
@@ -163,11 +189,10 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             }
             //Default table. All applications
             else{
-                $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn 
+                $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
                         WHERE J.jobID = A.jobID";
                 $result = mysqli_query($db,$sql);
-                if($result==false){echo $db->error;}
             }
 
             while ($row = mysqli_fetch_array($result)) {
@@ -181,6 +206,22 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 echo "<td>".$row['employerID']."</td>";
                 echo "<td>".$row['category']."</td>";
                 echo "<td>".$row['appliedOn']."</td>";
+                if($row['status']=='offer')
+                {
+                    echo "<td>You have received an offer! 
+                           <form method='post'>
+                           <select name='offerDecision'>
+                           <option value=''hidden>Decision</option>
+                           <option value='accept#".$row['jobID']."'>Accept Offer</option>
+                           <option value='refuse#".$row['jobID']."''>Refuse Offer</option>
+                            </select>
+                            <input type='submit' value='Send'>
+                            </form>
+                           </td>";
+                }
+                else{
+                    echo "<td>".$row['status']."</td>";
+                }
                 echo "<td>".
                     "<div hidden id='data".$row['jobID']."'>".json_encode($row,JSON_PRETTY_PRINT)."</div>".
                     "<button class='expandable' id ='button".$row['jobID']."'style='border: none' value='".$row['jobID']."' onclick='getMoreJobInfo(this.value)'>".
