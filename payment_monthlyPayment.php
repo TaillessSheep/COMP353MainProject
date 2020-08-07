@@ -3,19 +3,23 @@ require 'config.php';
 session_start();
 
 
-$sql = "SELECT accountID,charge,selectedMOP,email,balance,isAutoPay
+
+$sql = "SELECT accountID,charge,selectedMOP,email,balance,isAutoPay,status
         FROM 1User
         WHERE status != 'deactivated';";
-$result = mysqli_query($db, $sql);
-echo $db->error;
-$counter = 1;
-while ($row = mysqli_fetch_array($result)) {
+$result1 = mysqli_query($db, $sql);
+$count = mysqli_num_rows($result1);
+echo '<p>'.$count.' accounts in total</p>';
+//$counter = 1;
+while ($row = mysqli_fetch_array($result1)) {
     $accountID      = $row['accountID'];
     $charge         = $row['charge'];
     $selectedMOP    = $row['selectedMOP'];
     $email          = $row['email'];
     $balance        = $row['balance'];
     $isAutoPay      = $row['isAutoPay'];
+    $status         = $row['status'];
+    echo '<p>'.$accountID.' charged:$'.$charge;
 
     //get the next payment date
     $date = new DateTime('now');
@@ -50,8 +54,9 @@ while ($row = mysqli_fetch_array($result)) {
         // get the selected payment method
         $sql = "SELECT methodType,cardNum,holdersName,expirationDate
                 FROM 1MethodOfPayment
-                WHERE accountID = ".$accountID." AND mopDis = ".$selectedMOP." ;";
+                WHERE accountID = '".$accountID."' AND mopDis = ".$selectedMOP." ;";
         $result = mysqli_query($db, $sql);
+        echo $db->error;
         $row = mysqli_fetch_array($result);
 
         // script to withdrawal $charge amount
@@ -103,4 +108,5 @@ while ($row = mysqli_fetch_array($result)) {
         }
     }
 
+    echo " new balance:".$balance." new status:".$status." done \n";
 }

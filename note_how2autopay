@@ -1,0 +1,25 @@
+1.use the linux system (use putty to access the ENCS server)
+
+2.enter
+crontab -e
+into the command line to go in the cronjob editor
+
+3.press the "insert" key on the keyboard to go in edit mode
+
+4.enter
+* * * * *  sleep 10; wget --user=oyc353_1 --password=NJ9VkGQc https://oyc353.encs.concordia.ca/payment_monthlyPayment.php
+
+5.press "Esc" key, then enter
+:wq
+
+6.press "Enter" key to exit and start the cronjob
+
+# now you have set up an auto-payment triggered on every minute
+# to change the triggering duration, you need to change the "* * * * *" on step 4
+# the "* * * * *" can be seen as "m h d M D", which can be read as
+# "the mth. minute of the hth. hour of the dth. day of the Mth. month of the year. (plus every Dth. day of the week)"
+# for more detail, google "crontab generator".
+# any generator would be fine
+
+
+
