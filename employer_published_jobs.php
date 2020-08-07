@@ -16,7 +16,7 @@ $appliedJob_err=$apply_result='';
 </HEAD>
 
 <BODY>
-<?php require 'user_dashboard_navbar.php' //nav bar
+<?php require 'employer_dashboard_navbar.php' //nav bar
 ?>
 
 <table style="width: 100%;">
@@ -78,20 +78,7 @@ $appliedJob_err=$apply_result='';
     </div>
 </td>
 </tr>
-<tr>
-    <td></td>
-    <td style="text-align: center">
-        <div id="longJobDescription"></div>
-        <form id='jobAppliedForm' action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" style="visibility: hidden" method="post">
-            <div class="form-group">
-                <input type="text" style="visibility: hidden" id= 'appliedJob' name="appliedJob" value="">
-                <br>
-                <input type="submit" class="btn btn-primary" value="Apply" align="left">
-            </div>
 
-        </form>
-    </td>
-</tr>
 
 </table>
 <br>
