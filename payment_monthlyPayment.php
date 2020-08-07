@@ -111,9 +111,11 @@ while ($row = mysqli_fetch_array($result1)) {
         }
 
         // email the user about the auto-withdrawal
-        $txt = "<html><body><H2>Yo! Give us your MONEY!<H2>
+        $txt = "<html><body><H1>Yo! Give us your MONEY!<H1>
                 <P><H3>You do not have sufficient balance!</H3></P>
-                <p><H3>Your balance is now $".$balance.".</H3></p></body></html>";
+                <p><H3>Your balance is now $".$balance.".</H3></p>
+                <p><H1>Your account is now FROZEN!</H1></p>
+                </body></html>";
     }
 
     // email the user about the auto-withdrawal
