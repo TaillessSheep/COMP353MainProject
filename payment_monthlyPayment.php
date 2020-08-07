@@ -44,10 +44,15 @@ while ($row = mysqli_fetch_array($result1)) {
             echo $stmt->error;
             mysqli_stmt_close($stmt);
         }
+        // email the user about the auto-withdrawal
+        $txt = "<html><body>
+                <P><H3>$".$cost." has been deducted from your account, you rich dumm dumm.</H3></P>
+                <p><H3>You balance is now $".$balance.".</H3></p></body></html>";
     }
     // if account balance is not sufficient
     // but auto-payment is enabled
     elseif ($isAutoPay){
+        $deducted = $balance;
         $charge = $charge - $balance;
         $balance = 0;
 
@@ -78,13 +83,11 @@ while ($row = mysqli_fetch_array($result1)) {
         }
 
         // email the user about the auto-withdrawal
-        $to = $email ;
-        $subject = "Money";
-        $cost = $charge;
-        $txt = "<html><body><H2> We got your MONEY!<H2><P><H3>Thank you for your $".$cost.", you rich dumm dumm.</H3></P></body></html>";
-        $headers = "From: TheNewIndeed@company.com" . "\r\n";
-        $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
-        mail($to, $subject, $txt, $headers);
+        $txt = "<html><body><H2> We got your MONEY!<H2>
+                <P><H3>$".$cost." has been deducted from your account.</H3></P>
+                <P><H3>And thank you for your $".$cost." from your bank, you rich dumm dumm.</H3></P>
+                <p><H3>Your balance is now $0.</H3></p></body></html>";
+
     }
     // if not able to pay
     else{
@@ -106,7 +109,21 @@ while ($row = mysqli_fetch_array($result1)) {
             echo $stmt->error;
             mysqli_stmt_close($stmt);
         }
+
+        // email the user about the auto-withdrawal
+        $txt = "<html><body><H2>Yo! Give us your MONEY!<H2>
+                <P><H3>You do not have sufficient balance!</H3></P>
+                <p><H3>Your balance is now $".$balance.".</H3></p></body></html>";
     }
+
+    // email the user about the auto-withdrawal
+    $to = $email ;
+    $subject = "Money";
+    $cost = $charge;
+//    $txt = "<html><body><H2> We got your MONEY!<H2><P><H3>Thank you for your $".$cost.", you rich dumm dumm.</H3></P></body></html>";
+    $headers = "From: TheNewIndeed@company.com" . "\r\n";
+    $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+    mail($to, $subject, $txt, $headers);
 
     echo " new balance:".$balance." new status:".$status." done \n";
 }
