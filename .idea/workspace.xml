@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="61179c03-cc66-40a0-b2c2-386ac09a2244" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/employer_published_jobs.php" beforeDir="false" afterPath="$PROJECT_DIR$/employer_published_jobs.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mypostedjob.php" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP" />
+  <component name="ProjectId" id="1fVTwdgrqRjWDCv9BrQAybVklXt" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="61179c03-cc66-40a0-b2c2-386ac09a2244" name="Default Changelist" comment="" />
+      <created>1596302499193</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1596302499193</updated>
+      <workItem from="1596302500545" duration="25976000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="693" y="206" key="#SSH_Configurations" timestamp="1596304061772">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="693" y="206" key="#SSH_Configurations/0.0.1920.1040@0.0.1920.1040" timestamp="1596304061772" />
+    <state x="709" y="219" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596339200067">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="709" y="219" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596339200067" />
+    <state x="685" y="528" key="NewPhpFileDialog" timestamp="1596408584680">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="685" y="528" key="NewPhpFileDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596408584680" />
+    <state x="315" y="230" key="SettingsEditor" timestamp="1596302959687">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="315" y="230" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1596302959687" />
+    <state x="431" y="260" key="com.intellij.database.dbimport.ImportDialog" timestamp="1596339468525">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="431" y="260" key="com.intellij.database.dbimport.ImportDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596339468525" />
+    <state x="374" y="49" width="807" height="727" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog" timestamp="1596681386482">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="374" y="49" width="807" height="727" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596681386482" />
+  </component>
+</project>
