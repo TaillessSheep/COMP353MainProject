@@ -2,10 +2,26 @@
 require 'config.php';
 session_start();
 // Processing form data when form is submitted
-$deactivate_result = $deactivate_err="";
+$deactivate_result='';
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
-
+    if(isset($_POST['activateAccount']))
+    {
+        $accountID = $_POST['switchStatusID'];
+        $sql = "UPDATE `1User` SET status = 'activated' WHERE  accountID='".$accountID ."'";
+        if(mysqli_query($db,$sql)){
+            $deactivate_result='You have sucessfully activated the user.';
+        }
+    }
+    if(isset($_POST['deactivateAccount']))
+    {
+        $accountID = $_POST['switchStatusID'];
+        echo 'Account ID: '.$accountID;
+        $sql = "UPDATE `1User` SET status = 'deactivated' WHERE  accountID='".$accountID ."'";
+        if(mysqli_query($db,$sql)){
+            $deactivate_result='You have sucessfully deactivated the user.';
+        }
+    }
 }
 ?>
 <HTML>
@@ -42,23 +58,25 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             //Reset table to all applications
             if(isset($_POST['resetTable']))
             {
-                $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance FROM oyc353_1.`1User`";
+                $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance FROM `1User` ORDER BY isEmployer DESC";
                 $result = mysqli_query($db,$sql);
             }
             // See Employers
             elseif(isset($_POST['seeEmployers']))
             {
                 $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance 
-                        FROM oyc353_1.`1User`
-                        WHERE isEmployer='" . 1 ."'";
+                        FROM `1User`
+                        WHERE isEmployer='" . 1 ."'
+                        ORDER BY isEmployer DESC";
                 $result = mysqli_query($db,$sql);
             }
             //See JS
             elseif(isset($_POST['seeJS']))
             {
                 $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance 
-                        FROM oyc353_1.`1User`
-                        WHERE isEmployer='" . 0 ."'";
+                        FROM `1User`
+                        WHERE isEmployer='" . 0 ."'
+                        ORDER BY isEmployer DESC";
                 $result = mysqli_query($db,$sql);
             }
             // Search by premium option
@@ -67,13 +85,14 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 $category = $_POST['accountCategory'];
                 if($category == 'all' || empty($category))
                 {
-                    $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance FROM oyc353_1.`1User`";
+                    $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance FROM oyc353_1.`1User`ORDER BY isEmployer DESC";
                 }
                 else
                 {
                     $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance 
-                        FROM oyc353_1.`1User`
-                        WHERE premiumOpt='" . $category ."'";
+                        FROM `1User`
+                        WHERE premiumOpt='" . $category ."'
+                        ORDER BY isEmployer DESC";
                 }
                 $result = mysqli_query($db,$sql);
             }
@@ -82,12 +101,13 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             {
                 $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance 
                         FROM oyc353_1.`1User`
-                        WHERE balance<'" . 0 ."'";
+                        WHERE balance<'" . 0 ."'
+                        ORDER BY isEmployer DESC";
                 $result = mysqli_query($db,$sql);
             }
             //Default table. All users
             else{
-                $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance FROM oyc353_1.`1User`";
+                $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance FROM oyc353_1.`1User`ORDER BY isEmployer DESC";
                 $result = mysqli_query($db,$sql);
             }
 
@@ -109,7 +129,28 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 echo "<td>".$row['status']."</td>";
                 echo "<td>".$row['email']."</td>";
                 echo "<td>".$row['balance']."</td>";
-                echo "<td>Deactivate</td>";
+                if($row['status']=='activated')
+                {
+                    echo "<td>
+                        <form method='post'>
+                        <input type='submit' value='Deactivate' name='deactivateAccount'>    
+                        <input type='hidden' value='".$row['accountID']."' name='switchStatusID'>
+                        </form>
+                         </td>";
+                }
+                elseif($row['status']=='deactivated')
+                {
+                    echo "<td>
+                        <form method='post'>
+                        <input type='submit' value='Activate' name='activateAccount'>    
+                        <input type='hidden' value='".$row['accountID']."' name='switchStatusID'>
+                        </form>
+                          </td>";
+                }
+                elseif($row['status']=='frozen')
+                {
+                    echo "<td>Frozen. User Settlement required.</td>";
+                }
                 echo "</tr>";
             }
             ?>
