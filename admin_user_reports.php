@@ -85,7 +85,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 $category = $_POST['accountCategory'];
                 if($category == 'all' || empty($category))
                 {
-                    $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance FROM oyc353_1.`1User`ORDER BY isEmployer DESC";
+                    $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance FROM `1User`ORDER BY isEmployer DESC";
                 }
                 else
                 {
@@ -107,7 +107,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             }
             //Default table. All users
             else{
-                $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance FROM oyc353_1.`1User`ORDER BY isEmployer DESC";
+                $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance FROM `1User`ORDER BY isEmployer DESC";
                 $result = mysqli_query($db,$sql);
             }
 
@@ -208,7 +208,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         </tr>
     </table>
     <div>
-        <span class="help-block"><?php echo $deactivate_err; ?></span>
         <span class="help-block" style="color: green"><?php echo $deactivate_result; ?></span>
     </div>
 </td>
