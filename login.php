@@ -24,10 +24,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     // If result matched $accountID and $password, table row must be 1 row
     if($count == 1) {
         // Verify if user's account is activated and if it is an employer or JS
-        $sql = "SELECT activation,isEmployer FROM 1User WHERE accountID= '$accountID'";
+        $sql = "SELECT status,isEmployer FROM 1User WHERE accountID= '$accountID'";
         $result = mysqli_query($db,$sql);
         $row = mysqli_fetch_array($result);
-        if($row['activation']==1){
+        if($row['status']=='activated'){
             $_SESSION['accountID']  = $accountID;
             $_SESSION['profileName']=$profilename;
             if( $row['isEmployer']==1) //Valid employer account
