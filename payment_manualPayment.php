@@ -5,7 +5,7 @@ $lastPage = $_SESSION["lastPage"];
 $_SESSION["lastPage"] = "";
 $creditCardNumber = $holderName1 = $holderName2 = $expDate = $checkingAccountNum = "";
 $methodType_err = $creditCardNumber_err = $holderName_err1 = $holderName_err2 = $expDate_err = $checkingAccountNum_err = $login_error = "";
-
+$topUpAmount_err='';
 $radioVal = $_POST["selectedMOP"];
 
 $sql = "SELECT methodType, cardNum, holdersName, expirationDate
@@ -18,11 +18,56 @@ $cardNum = $row['cardNum'];
 $holdersName=$row['holdersName'];
 $expirationDate=$row['expirationDate'];
 
-echo $methodType.$cardNum.$holdersName.$expirationDate;
+//echo $methodType.$cardNum.$holdersName.$expirationDate;
 
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
+
+    $topUpAmount = mysqli_real_escape_string($db, $_POST['topUpAmount']);
+
+    if($topUpAmount == 0){
+        $topUpAmount_err = "Nothing has been topped up.";
+    }else{
+        //get the current balance
+        $sql = "SELECT balance
+        FROM 1User
+        WHERE accountID = '".$_SESSION['accountID']."';";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_array($result);
+        $balance=$row['balance'];
+
+        //compute the new balance
+        $balance = $balance + $topUpAmount;
+
+        //update DB
+        $sql = "UPDATE 1User
+                    SET balance=?
+                    WHERE accountID=?";
+
+        if ($stmt = mysqli_prepare($db, $sql)) {
+            mysqli_stmt_bind_param($stmt, "ss", $param_balance, $param_accountID);
+            // Set parameters
+            $param_accountID = $accountID;
+            $param_balance = $balance;
+
+            mysqli_stmt_execute($stmt);
+            echo $stmt->error;
+            mysqli_stmt_close($stmt);
+            header("location: " . $lastPage);
+        }
+
+        echo '<script type="text/javascript">';
+        echo "alert('You have successfully topped up $".$topUpAmount.".');";
+        echo 'window.location.href = "method_of_payment.php";';
+        echo '</script>';
+
+
+    }
+
+
+
+
 //    $login_error="";
 //    $accountID_err="";
 //    $password_err="";
@@ -199,10 +244,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
 
     <form name='submitform' action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
         <div id="topUpAmount">
-            <div class="form-group <?php echo (!empty($checkingAccountNum_err)) ? 'has-error' : ''; ?>">
+            <div class="form-group <?php echo (!empty($topUpAmount_err)) ? 'has-error' : ''; ?>">
                 <label id="topUpAmount">Amount to Top UP</label>
                 <input type="number" min="0" name="topUpAmount" class="form-control" value="">
-                <span class="help-block"><?php echo $checkingAccountNum_err; ?></span>
+                <span class="help-block"><?php echo $topUpAmount_err; ?></span>
             </div>
         </div>
 
