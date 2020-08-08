@@ -37,7 +37,14 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
         }
         $sql = "UPDATE 1User  SET isAutoPay = ".$isAutoPay." WHERE accountID = '".$_SESSION['accountID']."';";
         $result = mysqli_query($db,$sql);
-        echo $db->error;
+//        echo $db->error;
+
+        if($isAutoPay){
+            echo '<script>alert("You have been switched to auto-pay on the first day of every month.")</script>';
+        }else{
+            echo '<script>alert("You have been switched to manual payment.")</script>';
+        }
+
     }
 }
 ?>
