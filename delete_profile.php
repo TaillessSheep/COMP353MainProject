@@ -4,12 +4,10 @@ require 'config.php'; //TODO UNCOMMENT
 $delete_confirm = $password = $confirm_password = "";
 $delete_confirm_err = $password_err = $confirm_password_err = "";
 $update_result="";
-
+session_start();
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
-    session_start();
-
     // Validate password
     if (empty(trim($_POST["password"])))
     {
