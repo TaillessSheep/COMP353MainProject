@@ -33,7 +33,8 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 <th>Post Date</th>
                 <th>End Date</th>
                 <th>Details</th>
-                <th>Application</th>
+                <th># of Applicants</th>
+                <th>Applications</th>
             </tr>
             </thead>
             <tbody id="tableBody">
@@ -130,6 +131,10 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 ?>
                 <script> var jobdata = <?php echo json_encode($row);?></script>
                 <?php
+                $jobID=$row['jobID'];
+                $sql = "SELECT COUNT(*) as numberOfApplications FROM `1Applied` WHERE jobID= '$jobID'";
+                $result2 = mysqli_query($db,$sql);
+                $row2 = mysqli_fetch_array($result2);
                 echo "<tr>";
                 echo "<td>".$row['jobID']."</td>";
                 echo "<td>".$row['title']."</td>";
@@ -143,6 +148,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                     "<i class=\"material-icons\">expand_more</i>".
                     "More</button>".
                     "</td>";
+                echo "<td>".$row2['numberOfApplications']."</td>";
                 echo "<td>See Applications</td>";
                 echo "</tr>";
             }
