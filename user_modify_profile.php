@@ -91,7 +91,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 
                 // Set parameters
                 $param_new_password = trim($_POST["new_password"]);
-                $param_userID = trim($_SESSION["accountID"]);
+                $param_accountID = trim($_SESSION["accountID"]);
                 $param_old_password = trim($_POST["old_password"]);
 
                 // Attempt to execute the prepared statement
