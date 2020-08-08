@@ -265,9 +265,8 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                         <option value=''hidden>Choose Category</option>
                         <option value='all'>All Categories</option>
                         <?php
-                        $sql = "SELECT category 
-                            FROM 1Job J, 1Applied A
-                            WHERE J.jobID = A.jobID";
+                        $sql = "SELECT categoryName AS category 
+                                FROM 1JobCategory";
                         $result = mysqli_query($db,$sql);
                         while ($row = mysqli_fetch_array($result)) {
                             echo "<option value='".$row['category']."'>".$row['category']."</option>";
