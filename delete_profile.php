@@ -4,12 +4,10 @@ require 'config.php'; //TODO UNCOMMENT
 $delete_confirm = $password = $confirm_password = "";
 $delete_confirm_err = $password_err = $confirm_password_err = "";
 $update_result="";
-
+session_start();
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
-    session_start();
-
     // Validate password
     if (empty(trim($_POST["password"])))
     {
@@ -74,7 +72,27 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 </HEAD>
 
 <BODY>
-<?php require 'user_dashboard_navbar.php' //nav bar
+<?php
+$accountID = $_SESSION['accountID'];
+$sql = "SELECT accountID FROM 1Admin WHERE accountID= '$accountID'";
+$result = mysqli_query($db,$sql);
+if(mysqli_num_rows($result) ==1)
+{
+    require 'admin_dashboard_navbar.php' ;
+}
+else{
+    $sql = "SELECT isEmployer FROM 1User WHERE accountID= '$accountID'";
+    $result = mysqli_query($db,$sql);
+    $row = mysqli_fetch_array($result);
+    if($row['isEmployer']==1)
+    {
+        require 'employer_dashboard_navbar.php' ;
+    }
+    else{
+        require 'user_dashboard_navbar.php' ;
+    }
+}
+
 ?>
 
 <h2 style="color:red;padding-left: 25px;" >Delete Profile</h2>
