@@ -149,7 +149,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                     "More</button>".
                     "</td>";
                 echo "<td>".$row2['numberOfApplications']."</td>";
-                echo "<td>See Applications</td>";
+                echo "<td><a href='employer_job_applications.php?jobID=".$row['jobID']."'>See Applications</a></td>";
                 echo "</tr>";
             }
             ?>
