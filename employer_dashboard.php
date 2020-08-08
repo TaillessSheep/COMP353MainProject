@@ -1,6 +1,9 @@
 <?php
 require 'config.php';
 session_start();
+
+
+
 ?>
 <HTML>
 <HEAD>
@@ -53,11 +56,11 @@ $row2 = mysqli_fetch_array($result2);
         <div class="text-center">
             <h2 class="section-heading text">Contact Us</h2>
         </div>
-        <form id="contactForm" name="sentMessage" novalidate="novalidate">
+        <form id="contactForm" name="sentMessage" method="post">
             <div class="row align-items-stretch mb-5">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <input class="form-control" name="name" type="text" placeholder="Your Name *" required="required" data-validation-required-message="Please enter your name." />
+                        <input class="form-control" name="name" type="text" placeholder="Your Name *" required="required" data-validation-required-message="Please enter your name." required/>
                     </div>
                     <div class="form-group">
                         <input class="form-control" name="email" type="email" placeholder="Your Email *" required="required" data-validation-required-message="Please enter your email address." />
