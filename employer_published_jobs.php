@@ -1,10 +1,18 @@
 <?php
 require 'config.php';
 session_start();
-$appliedJob=$accountID=$appliedJob_err=$apply_result="";
+$accountID=$deleteJobResult="";
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
+    if(isset($_POST['deleteJob']))
+    {
+        $jobID = $_POST['deleteJobID'];
+        $sql = "DELETE FROM `1Job` WHERE jobID='".$jobID."'";
+        if(mysqli_query($db,$sql)){
+            $deleteJobResult='You have sucessfully deleted job id# '.$jobID.'.';
+        }
+    }
 }
 ?>
 <HTML>
@@ -35,6 +43,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 <th>Details</th>
                 <th># of Applicants</th>
                 <th>Applications</th>
+                <th>Delete Job</th>
             </tr>
             </thead>
             <tbody id="tableBody">
@@ -150,6 +159,13 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                     "</td>";
                 echo "<td>".$row2['numberOfApplications']."</td>";
                 echo "<td><a href='employer_job_applications.php?jobID=".$row['jobID']."'>See Applications</a></td>";
+                echo "<td style='text-align: center;'>
+                        <form method='post'>
+                        <input type='submit' value='Delete' name='deleteJob'>    
+                        <input type='hidden' value='".$row['jobID']."' name='deleteJobID'>
+                        </form>
+                         </td>";
+                echo "</tr>";
                 echo "</tr>";
             }
             ?>
@@ -214,7 +230,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
     </table>
     <div>
         <span class="help-block"><?php echo $appliedJob_err; ?></span>
-        <span class="help-block" style="color: green"><?php echo $apply_result; ?></span>
+        <span class="help-block" style="color: green"><?php echo $deleteJobResult; ?></span>
     </div>
 </td>
 </tr>
