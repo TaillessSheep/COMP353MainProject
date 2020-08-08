@@ -1,5 +1,4 @@
 <?php
-require 'config.php';
 session_start();
 $sql = "SELECT status  FROM `1User` WHERE accountID = '".$_SESSION['accountID']."';";
 $result = mysqli_query($db,$sql);
