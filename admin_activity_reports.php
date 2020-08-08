@@ -20,7 +20,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         $jobID = explode("#",$application)[1];
         $sql = "DELETE FROM `1Applied` WHERE jobID='".$jobID."' AND jobSeekerID='".$accountID."'";
         if(mysqli_query($db,$sql)){
-            $deleteApplicationResult='You have sucessfully deleted applcation id# '.$jobID.'.';
+            $deleteApplicationResult='You have sucessfully deleted this application id#';
         }
     }
 }
