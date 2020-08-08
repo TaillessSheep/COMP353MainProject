@@ -8,7 +8,7 @@
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content">
-            <a href="admin_update_profile.php">Update Profile</a>
+            <a href="admin_modify_profile.php">Update Profile</a>
             <a href="delete_profile.php">Delete Profile</a>
         </div>
     </div>
