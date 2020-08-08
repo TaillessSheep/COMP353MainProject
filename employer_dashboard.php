@@ -21,10 +21,12 @@ session_start();
 <?php require 'employer_dashboard_navbar.php' ;//nav bar
 $accountID = $_SESSION['accountID'];
 $profileName= $_SESSION['profileName'];
-$sql = "SELECT COUNT(*) AS number_jobs FROM 1Job WHERE employerID = '".$_SESSION['accountID']."';";
+$sql = "SELECT COUNT(*) AS number_jobs FROM 1Job WHERE employerID = '".$_SESSION['accountID']."'";
 $result = mysqli_query($db,$sql);
-if($result==false){echo $db->error;}
-$row = mysqli_fetch_array($result)
+$row = mysqli_fetch_array($result);
+$sql2 = "SELECT status FROM `1User` WHERE accountID = '".$_SESSION['accountID']."'";
+$result2 = mysqli_query($db,$sql2);
+$row2 = mysqli_fetch_array($result2);
 ?>
 <!-- Masthead-->
 <header class="masthead" style="height: 69%;">
@@ -33,6 +35,15 @@ $row = mysqli_fetch_array($result)
         <br>
         <br>
         <div class="masthead-subheading"> <?php echo "You have ". $row['number_jobs']." jobs posted."?> </div>
+        <?php
+        if($row2['status']=='frozen')
+        {
+            ?>
+            <div class="masthead-subheading"> <?php echo "Your account is currently frozen. Please update your payment
+             options or make a manual payment."?> </div>
+            <?php
+        }
+        ?>
     </div>
 </header>
 
