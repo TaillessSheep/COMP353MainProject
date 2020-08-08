@@ -2,12 +2,13 @@
 require 'config.php';
 session_start();
 
-$sql = "SELECT selectedMOP
+$sql = "SELECT selectedMOP,balance
         FROM `1User`
         WHERE accountID = '".$_SESSION['accountID']."';";
 $result = mysqli_query($db,$sql);
 $row = mysqli_fetch_array($result);
 $selectedMOP = $row['selectedMOP'];
+$balance = $row['balance'];
 
 $unappliedJob=$accountID=$unappliedJob_err=$unapply_result="";
 // Processing form data when form is submitted
@@ -38,9 +39,12 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
 <!--    <script src="functions.js"></script>-->
 </HEAD>
 
-<BODY>
+<p>
 <?php require 'user_dashboard_navbar.php' //nav bar
 ?>
+<div align="center"><p><H1>My balance: </H1></p></div>
+<div align="center"><p><H1>$<?php echo $balance;?></H1></p></div>
+<div align="center"><a href="payment_manualPayment_selectMethod.php?">Top up</a></div>
 
 <H1>My method of payments</H1>
 <table style="width: 90%; margin: auto">
