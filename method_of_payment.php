@@ -88,7 +88,7 @@ else{
 ?>
 <div align="center"><p><H1>My balance: </H1></p></div>
 <div align="center"><p><H1>$<?php echo $balance;?></H1></p></div>
-<div align="center"><a href="payment_manualPayment_selectMethod.php?">Top up</a></div>
+<div align="center"><a href="payment_manualPayment_selectMethod.php">Top up</a></div>
 
 <H1>My method of payments</H1>
 

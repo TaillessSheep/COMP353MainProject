@@ -6,21 +6,24 @@ $_SESSION["lastPage"] = "";
 $creditCardNumber = $holderName1 = $holderName2 = $expDate = $checkingAccountNum = "";
 $methodType_err = $creditCardNumber_err = $holderName_err1 = $holderName_err2 = $expDate_err = $checkingAccountNum_err = $login_error = "";
 $topUpAmount_err='';
-$radioVal = $_POST["selectedMOP"];
 
+$accountID = $_SESSION['accountID'];
+
+if(isset($_POST["selectedMOP"])){
+    $radioVal = $_POST["selectedMOP"];
+    $_SESSION['selectedMOP'] = $radioVal;
+}else{
+    $radioVal = $_SESSION['selectedMOP'];
+}
 $sql = "SELECT methodType, cardNum, holdersName, expirationDate
         FROM `1MethodOfPayment`
-        WHERE accountID = '".$_SESSION['accountID']."' AND mopDis=".$radioVal.";";
+        WHERE accountID = '".$accountID."' AND mopDis=".$radioVal.";";
 $result = mysqli_query($db,$sql);
 $row = mysqli_fetch_array($result);
 $methodType=$row['methodType'];
 $cardNum = $row['cardNum'];
 $holdersName=$row['holdersName'];
 $expirationDate=$row['expirationDate'];
-
-//echo $methodType.$cardNum.$holdersName.$expirationDate;
-
-
 
 if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
 
@@ -54,117 +57,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
             mysqli_stmt_execute($stmt);
             echo $stmt->error;
             mysqli_stmt_close($stmt);
-            header("location: " . $lastPage);
+//            header("location: " . $lastPage);
         }
 
         echo '<script type="text/javascript">';
         echo "alert('You have successfully topped up $".$topUpAmount.".');";
         echo 'window.location.href = "method_of_payment.php";';
         echo '</script>';
-
+//        header('method_of_payment.php');
 
     }
 
 
 
-
-//    $login_error="";
-//    $accountID_err="";
-//    $password_err="";
-//
-//    $sql = "SELECT mopDis
-//            FROM `1MethodOfPayment`
-//            WHERE accountID = ".$_SESSION['accountID']."
-//            ORDER BY mopDis DESC LIMIT 1;
-//            ";
-//    $result = mysqli_query($db,$sql);
-//    $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-//    $myMOPdis = $row['mopDis'] + 1;
-//
-//    if($_POST["paymentMethod"] == "credit") {
-//        if (empty(trim($_POST['creditCardNumber']))) {
-//            $creditCardNumber_err = "Please enter a credit card number.";
-//        } else {
-//            $cardNum = mysqli_real_escape_string($db, $_POST['creditCardNumber']);
-//        }
-//
-//        if (empty(trim($_POST['holderName1']))) {
-//            $holderName_err1 = "Please enter the name of the card's holder.";
-//        } else {
-//            $holderName1 = mysqli_real_escape_string($db, $_POST['holderName1']);
-//        }
-//
-//        if (empty(trim($_POST['expDate']))) {
-//            $expDate_err = "Please select the expiration date.";
-//        } else {
-//            $expDate = mysqli_real_escape_string($db, $_POST['expDate'] . "-01");
-//        }
-//
-//        $methodType = 'credit';
-//
-//        if (empty($creditCardNumber_err) && empty($holderName_err1) && empty($expDate_err) ){
-//            // Prepare an insert statement in MOP table
-//            $sql = "INSERT INTO 1MethodOfPayment (accountID, mopDis, methodType, cardNum, holdersName, expirationDate)
-//                    VALUES (?,?,?,?,?,?)";
-//            if ($stmt = mysqli_prepare($db, $sql)) {
-//                mysqli_stmt_bind_param($stmt, "ssssss", $param_accountNum, $param_myMOPdis, $param_methodType, $param_cardNum, $param_holderName, $param_expDate);
-//                // Set parameters
-//                $param_accountNum = $_SESSION['accountID'];
-//                $param_myMOPdis = $myMOPdis;
-//                $param_methodType = $methodType;
-//                $param_cardNum = $cardNum;
-//                $param_holderName = $holderName1;
-//                $param_expDate = $expDate;
-//
-//                mysqli_stmt_execute($stmt);
-//                echo $stmt->error;
-//                mysqli_stmt_close($stmt);
-//                header("location: " . $lastPage);
-//            }
-////            else {
-////                echo $db->error;
-////            }
-//        }
-//
-//    }else{
-//        if(empty(trim($_POST['checkingAccountNum']))){
-//            $checkingAccountNum_err = "Please enter your checking account number.";
-//        }else{
-//            $checkingAccountNum = mysqli_real_escape_string($db,$_POST['checkingAccountNum']);
-//        }
-//
-//        if(empty(trim($_POST['holderName2']))){
-//            $holderName_err2 = "Please enter the name of the card's holder.";
-//        }else{
-//            $holderName2 = mysqli_real_escape_string($db,$_POST['holderName2']);
-//        }
-//
-//        $methodType = 'checking';
-//
-//        if(empty($checkingAccountNum_err) && empty($holderName_err2)) {
-//            // Prepare an insert statement in MOP table
-//            $sql = "INSERT INTO 1MethodOfPayment (accountID, mopDis, methodType, cardNum, holdersName)
-//                    VALUES (?,?,?,?,?)";
-//
-//            if ($stmt = mysqli_prepare($db, $sql)) {
-//
-//                mysqli_stmt_bind_param($stmt, "sssss", $param_accountNum, $param_myMOPdis, $param_methodType, $param_cardNum, $param_holderName);
-//                // Set parameters
-//                $param_accountNum = $_SESSION['accountID'];
-//                $param_myMOPdis = $myMOPdis;
-//                $param_methodType = $methodType;
-//                $param_cardNum = $checkingAccountNum;
-//                $param_holderName = $holderName2;
-//
-//                mysqli_stmt_execute($stmt);
-//                mysqli_stmt_close($stmt);
-//                header("location: " . $lastPage);
-//            } else {
-////                echo $db->error;
-//            }
-//        }
-//
-//    }
 
 }
 ?>
@@ -213,7 +118,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
             echo '<label>Account Number:</label>';
         }
         $myCardNum = "";
-        for ($i = 1; $i <= strlen($row['cardNum'])-4; $i++) {
+        for ($i = 1; $i <= strlen($cardNum)-4; $i++) {
             $myCardNum = $myCardNum."*";
         }
         $myCardNum = $myCardNum.substr($cardNum, -4);
@@ -245,7 +150,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
     <form name='submitform' action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
         <div id="topUpAmount">
             <div class="form-group <?php echo (!empty($topUpAmount_err)) ? 'has-error' : ''; ?>">
-                <label id="topUpAmount">Amount to Top UP</label>
+                <label id="topUpAmount">Amount to Top Up</label>
                 <input type="number" min="0" name="topUpAmount" class="form-control" value="">
                 <span class="help-block"><?php echo $topUpAmount_err; ?></span>
             </div>
@@ -257,7 +162,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
             <input type="submit" name="Confirm" class="btn btn-primary" value="Confirm">
         </div>
     </form>
-    <button onclick="window.location.href='<?php echo $lastPage; ?>'">Cancel</button>
+    <button onclick="window.location.href='payment_manualPayment_selectMethod.php'">Cancel</button>
 </div>
 </body>
 </html>
