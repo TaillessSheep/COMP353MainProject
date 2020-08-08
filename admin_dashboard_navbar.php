@@ -1,8 +1,8 @@
 <div class="navbar" style="margin: 0">
     <a href="admin_dashboard.php"><i class="material-icons" style="color: white">home</i></a>
-    <a href="admin_activity_reports.php">Activity Overview</a>
-    <a href="admin_reports.php">User Reports</a>
-    <a href="admin_reports.php">Outstanding Accounts Reports</a>
+    <a href="admin_activity_overview.php">Activity Overview</a>
+    <a href="admin_user_reports.php">User Reports</a>
+    <a href="admin_account_reports.php">Outstanding Accounts Reports</a>
     <div class="dropdown">
         <button class="dropbtn">Modify Profile
             <i class="fa fa-caret-down"></i>
