@@ -1,10 +1,28 @@
 <?php
 require 'config.php';
 session_start();
+$deleteJobResult= $deleteApplicationResult="";
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
-
+    if(isset($_POST['deleteJob']))
+    {
+        $jobID = $_POST['deleteJobID'];
+        $sql = "DELETE FROM `1Job` WHERE jobID='".$jobID."'";
+        if(mysqli_query($db,$sql)){
+            $deleteJobResult='You have sucessfully deleted job id# '.$jobID.'.';
+        }
+    }
+    if(isset($_POST['deleteApplication']))
+    {
+        $application=$_POST['deleteApplicationID'];
+        $accountID = explode("#",$application)[0];
+        $jobID = explode("#",$application)[1];
+        $sql = "DELETE FROM `1Applied` WHERE jobID='".$jobID."' AND jobSeekerID='".$accountID."'";
+        if(mysqli_query($db,$sql)){
+            $deleteApplicationResult='You have sucessfully deleted applcation id# '.$jobID.'.';
+        }
+    }
 }
 ?>
 <HTML>
@@ -35,6 +53,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                     <th>Category</th>
                     <th>Post Date</th>
                     <th>Details</th>
+                    <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -129,6 +148,12 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                         "<i class=\"material-icons\">expand_more</i>".
                         "More</button>".
                         "</td>";
+                    echo "<td style='text-align: center;'>
+                        <form method='post'>
+                        <input type='submit' value='Delete' name='deleteJob'>    
+                        <input type='hidden' value='".$row['jobID']."' name='deleteJobID'>
+                        </form>
+                         </td>";
                     echo "</tr>";
                 }
                 ?>
@@ -192,6 +217,9 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                     </form>
                 </tr>
             </table>
+            <div>
+                <span class="help-block" style="color: green"><?php echo $deleteJobResult ?></span>
+            </div>
         </td>
     </tr>
     <tr>
@@ -202,7 +230,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
     </tr>
 </table>
 
-<br><br>
+<br>
 <h2>Posted Applications</h2>
 <table style="width: 100%;">
     <tr>
@@ -216,6 +244,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                     <th>Job Description</th>
                     <th>Category</th>
                     <th>Applied On Date</th>
+                    <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -341,11 +370,20 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                     echo "<td>".$row['briefDescription']."</td>";
                     echo "<td>".$row['category']."</td>";
                     echo "<td>".$row['appliedOn']."</td>";
+                    echo "<td style='text-align: center;'>
+                        <form method='post'>
+                        <input type='submit' value='Delete' name='deleteApplication'>    
+                        <input type='hidden' value='".$row['jobSeekerID']."#".$row['jobID']."' name='deleteApplicationID'>
+                        </form>
+                         </td>";
                     echo "</tr>";
                 }
                 ?>
                 </tbody>
             </table>
+            <div>
+                <span class="help-block" style="color: green"><?php echo $deleteApplicationResult ?></span>
+            </div>
         </td>
         <td style="text-align: center">
             <table style="margin-left: 50px; border-spacing: 150px; text-align: left">
