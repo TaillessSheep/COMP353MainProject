@@ -4,12 +4,10 @@ require 'config.php';
 $old_accountID = $new_accountID=$old_password = $new_password = $new_category="";
 $old_accountID_err = $new_accountID_err = $old_password_err = $new_password_err = $new_category_err="";
 $update_result="";
-
+session_start();
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
-    session_start();
-
     // Username modification
     if(isset($_POST['old_accountID']))
     {
@@ -65,7 +63,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 }
                 else
                 {
-                    echo "Oops! Something went wrong. Please try again later.";
+
                 }
                 // Close statement
                 mysqli_stmt_close($stmt);
