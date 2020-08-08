@@ -27,7 +27,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "SELECT status,isEmployer FROM 1User WHERE accountID= '$accountID'";
         $result = mysqli_query($db,$sql);
         $row = mysqli_fetch_array($result);
-        if($row['status']=='activated'){
+        if($row['status']=='activated' || $row['status']=='frozen'){
             $_SESSION['accountID']  = $accountID;
             $_SESSION['profileName']=$profilename;
             if( $row['isEmployer']==1) //Valid employer account
