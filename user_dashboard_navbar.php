@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 $sql = "SELECT status  FROM `1User` WHERE accountID = '".$_SESSION['accountID']."';";
 $result = mysqli_query($db,$sql);
 $row = mysqli_fetch_array($result);
