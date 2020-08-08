@@ -1,10 +1,10 @@
 <?php
 
 
-$servername = "localhost";
-$username = "root";
-$password = "Aa990205qzr+++";
-$dbname = "girrafe";
+$servername = "";
+$username = "";
+$password = "";
+$dbname = "";
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
