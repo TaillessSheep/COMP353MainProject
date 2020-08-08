@@ -1,5 +1,5 @@
 <?php
-//require 'config.php';
+require 'config.php';
 session_start();
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
@@ -20,20 +20,22 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 <?php require 'admin_dashboard_navbar.php' //nav bar
 ?>
 <H1>Activity Overview</H1>
+<br><br>
+<h2>Posted Jobs</h2>
 <table style="width: 100%;">
     <tr>
-        <td style="text-align: center;" >
+        <td style="vertical-align: top">
             <table class="blueTable" style="margin-left: 3%;">
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Employer</th>
-                        <th>Category</th>
-                        <th>Post Date</th>
-                        <th>Details</th>
-                    </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Employer</th>
+                    <th>Category</th>
+                    <th>Post Date</th>
+                    <th>Details</th>
+                </tr>
                 </thead>
                 <tbody id="tableBody">
                 <?php
@@ -200,9 +202,11 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
     </tr>
 </table>
 
+<br><br>
+<h2>Posted Applications</h2>
 <table style="width: 100%;">
     <tr>
-        <td style="text-align: center;" >
+        <td style="vertical-align: top">
             <table class="blueTable" style="margin-left: 3%;">
                 <thead>
                 <tr>
@@ -217,78 +221,115 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 <tbody id="tableBody">
                 <?php
                 //Reset table to all applications
-                if(isset($_POST['resetTable']))
+                if(isset($_POST['resetTableApplied']))
                 {
-                    $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job";
+                    $sql = "SELECT A.jobID, A.jobSeekerID,A.status,J.briefDescription,J.category,A.appliedOn 
+                            FROM `1Applied` A,`1Job` J 
+                            WHERE A.jobID=J.jobID";
                     $result = mysqli_query($db,$sql);
                 }
-                //Search by ID a job
-                elseif(isset($_POST['searchID']))
+                //Search by Job ID a job
+                elseif(isset($_POST['searchJobIDApplied']))
                 {
-                    $jobID = $_POST['jobID'];
+                    $jobID = $_POST['jobIDApplied'];
                     if(empty($jobID))
                     {
-                        $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job";
+                        $sql = "SELECT A.jobID, A.jobSeekerID,A.status,J.briefDescription,J.category,A.appliedOn 
+                            FROM `1Applied` A,`1Job` J 
+                            WHERE A.jobID=J.jobID";
                     }
                     else
                     {
-                        $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job
-                            WHERE jobID='".$jobID."'";
+                        $sql = "SELECT A.jobID, A.jobSeekerID,A.status,J.briefDescription,J.category,A.appliedOn 
+                            FROM `1Applied` A,`1Job` J 
+                            WHERE A.jobID=J.jobID
+                            AND A.jobID='" . $jobID ."'";;
                     }
-
+                    $result = mysqli_query($db,$sql);
+                }
+                //Search by Account ID
+                elseif(isset($_POST['searchAccountIDApplied'])){
+                    $accountID = $_POST['accountIDApplied'];
+                    if(empty($accountID))
+                    {
+                        $sql = "SELECT A.jobID, A.jobSeekerID,A.status,J.briefDescription,J.category,A.appliedOn 
+                            FROM `1Applied` A,`1Job` J 
+                            WHERE A.jobID=J.jobID";
+                    }
+                    else
+                    {
+                        $sql = "SELECT A.jobID, A.jobSeekerID,A.status,J.briefDescription,J.category,A.appliedOn 
+                            FROM `1Applied` A,`1Job` J 
+                            WHERE A.jobID=J.jobID
+                            AND A.jobSeekerID='" . $accountID ."'";;
+                    }
                     $result = mysqli_query($db,$sql);
                 }
                 // Search jobs by category
-                elseif(isset($_POST['searchCategory']))
+                elseif(isset($_POST['searchCategoryApplied']))
                 {
-                    $category = $_POST['category'];
+                    $category = $_POST['categoryApplied'];
                     if($category == 'all' || empty($category))
                     {
-                        $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job";
+                        $sql = "SELECT A.jobID, A.jobSeekerID,A.status,J.briefDescription,J.category,A.appliedOn 
+                            FROM `1Applied` A,`1Job` J 
+                            WHERE A.jobID=J.jobID";
                     }
                     else
                     {
-                        $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job
-                            WHERE category='".$category."'";
+                        $sql = "SELECT A.jobID, A.jobSeekerID,A.status,J.briefDescription,J.category,A.appliedOn 
+                            FROM `1Applied` A,`1Job` J 
+                            WHERE A.jobID=J.jobID
+                            AND J.category='" . $category ."'";
                     }
                     $result = mysqli_query($db,$sql);
                 }
                 //Search jobs by post date
-                elseif(isset($_POST['searchDate']))
+                elseif(isset($_POST['searchDateApplied']))
                 {
-                    $fromDate = $_POST['date_from'];
-                    $toDate = $_POST['date_to'];
+                    $fromDate = $_POST['date_fromApplied'];
+                    $toDate = $_POST['date_toApplied'];
                     //No date limit
                     if(empty($fromDate) and empty($toDate))
                     {
-                        $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job";
+                        $sql = "SELECT A.jobID, A.jobSeekerID,A.status,J.briefDescription,J.category,A.appliedOn 
+                            FROM `1Applied` A,`1Job` J 
+                            WHERE A.jobID=J.jobID";
                     }
                     // no lower date limit
                     elseif(empty($fromDate))
                     {
-                        $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job
-                            WHERE postDate<='".$toDate."'";
+                        $sql = "SELECT A.jobID, A.jobSeekerID,A.status,J.briefDescription,J.category,A.appliedOn 
+                            FROM `1Applied` A,`1Job` J 
+                            WHERE A.jobID=J.jobID
+                            AND A.appliedOn<'". $toDate ."'";
                     }
                     // no upper date limit
                     elseif(empty($toDate))
                     {
-                        $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job
-                            WHERE postDate>='".$fromDate."'";
+                        $sql = "SELECT A.jobID, A.jobSeekerID,A.status,J.briefDescription,J.category,A.appliedOn 
+                            FROM `1Applied` A,`1Job` J 
+                            WHERE A.jobID=J.jobID
+                            AND A.appliedOn>'". $fromDate ."'";
                     }
                     // 2 side bounded date span
                     else{
-                        $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job
-                            WHERE postDate>='".$fromDate."'AND postDate<='".$toDate."'";
+                        $sql = "SELECT A.jobID, A.jobSeekerID,A.status,J.briefDescription,J.category,A.appliedOn 
+                            FROM `1Applied` A,`1Job` J 
+                            WHERE A.jobID=J.jobID
+                            AND A.appliedOn>'". $fromDate ."'
+                            AND A.appliedOn<'". $toDate ."'";
                     }
                     $result = mysqli_query($db,$sql);
                 }
                 //Default table. All jobs
                 else{
-                    $sql = "SELECT jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID FROM 1Job";
+                    $sql = "SELECT A.jobID, A.jobSeekerID,A.status,J.briefDescription,J.category,A.appliedOn 
+                            FROM `1Applied` A,`1Job` J 
+                            WHERE A.jobID=J.jobID";
                     $result = mysqli_query($db,$sql);
                 }
 
-                $result = mysqli_query($db,$sql);
                 while ($row = mysqli_fetch_array($result)) {
                     ?>
                     <script> var jobdata = <?php echo json_encode($row);?></script>
@@ -311,7 +352,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 <tr>
                     <form method="post">
                         <td style="padding-bottom: 1em;">
-                            <input type="submit" value="Reset" name="resetTable" style="min-width: 170px">
+                            <input type="submit" value="Reset" name="resetTableApplied" style="min-width: 170px">
                         </td>
                         <td style="padding-bottom: 1em; padding-left: 1em">
                         </td>
@@ -337,7 +378,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                         </td>
                     </form>
                 </tr>
-
                 <tr>
                     <form method="post">
                         <td style="padding-bottom: 1em;">
@@ -376,7 +416,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             </table>
         </td>
     </tr>
-
 </table>
 
 </BODY>
