@@ -2,13 +2,19 @@
 require 'config.php';
 session_start();
 
-$sql = "SELECT selectedMOP,isAutoPay
+
+$sql = "SELECT selectedMOP,isAutoPay,balance
+
         FROM `1User`
         WHERE accountID = '".$_SESSION['accountID']."';";
 $result = mysqli_query($db,$sql);
 $row = mysqli_fetch_array($result);
 $selectedMOP = $row['selectedMOP'];
+
+$balance = $row['balance'];
+
 $isAutoPay = $row['isAutoPay'];
+
 
 $unappliedJob=$accountID=$unappliedJob_err=$unapply_result="";
 // Processing form data when form is submitted
@@ -56,6 +62,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
 <!--    <script src="functions.js"></script>-->
 </HEAD>
 
+
 <BODY>
 <?php
 $accountID = $_SESSION['accountID'];
@@ -79,6 +86,9 @@ else{
 }
 
 ?>
+<div align="center"><p><H1>My balance: </H1></p></div>
+<div align="center"><p><H1>$<?php echo $balance;?></H1></p></div>
+<div align="center"><a href="payment_manualPayment_selectMethod.php">Top up</a></div>
 
 <H1>My method of payments</H1>
 
