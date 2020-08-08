@@ -9,6 +9,7 @@ if($row['status']=='frozen')
     ?>
 
     <div class="navbar" style="margin: 0">
+        <a href="user_dashboard.php"><i class="material-icons" style="color: white">home</i></a>
         <div class="dropdown">
             <button class="dropbtn">Modify Profile
                 <i class="fa fa-caret-down"></i>
