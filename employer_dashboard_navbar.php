@@ -1,5 +1,4 @@
 <?php
-require 'config.php';
 session_start();
 $sql = "SELECT status  FROM `1User` WHERE accountID = '".$_SESSION['accountID']."'";
 $result = mysqli_query($db,$sql);
@@ -34,7 +33,7 @@ else
     ?>
     <div class="navbar" style="margin: 0">
         <a href="employer_dashboard.php"><i class="material-icons" style="color: white">home</i></a>
-        <a href="employer_job_portal.php">Search Jobs</a>
+        <a href="employer_job_portal.php">View Jobs</a>
         <a href="employer_published_jobs.php">My Published Jobs</a>
         <div class="dropdown">
             <button class="dropbtn">Modify Profile

@@ -111,64 +111,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         }
     }
 
-    // Category modification
-    if(isset($_POST['new_category']))
-    {
-        if(empty(trim($_POST["new_category"])))
-        {
-            $new_category_err = "Please select a category.";
-        }
-        elseif(!isset($_POST['category_confirm']))
-        {
-            $new_category_err="Please confirm your new category choice";
-        }
-        //Check if this new category is legal with their # of current applications
-        elseif(trim($_POST["new_category"]) == 'basic' || trim($_POST["new_category"])=='prime')
-        {
-            $sql = "SELECT COUNT(*) AS total_applications FROM `1Applied` WHERE jobSeekerID = '".$_SESSION['accountID']."'";
-            $result = mysqli_query($db,$sql);
-            $row = mysqli_fetch_array($result);
-            if(trim($_POST["new_category"]) == 'basic' && $row['total_applications']>0)
-            {
-                $new_category_err="You may not change your account to basic as you have open job applications.";
-            }
-            elseif(trim($_POST["new_category"]) == 'prime' && $row['total_applications']>5)
-            {
-                $new_category_err="You may not change your account to prime as you have more than 5 open job applications.";
-            }
-        }
-        if(empty($new_category_err))
-        {
-            //Update the category
-            $sql = "UPDATE 1User SET premiumOpt = ? WHERE accountID = ? ";
-            if($stmt = mysqli_prepare($db, $sql))
-            {
-                // Bind variables to the prepared statement as parameters
-                mysqli_stmt_bind_param($stmt, "ss", $param_new_category, $param_accountID);
-
-                // Set parameters
-                $param_new_category = trim($_POST["new_category"]);
-                $param_accountID = trim($_SESSION["accountID"]);
-
-                // Attempt to execute the prepared statement
-                if(mysqli_stmt_execute($stmt))
-                {
-                    $update_result = "Your user category has been successfully changed!";
-                }
-                else
-                {
-                    $new_category_err="Please verify your information";
-                }
-            }
-            else
-            {
-                echo "Oops! Something went wrong. Please try again later.";
-            }
-            // Close statement
-            mysqli_stmt_close($stmt);
-        }
-    }
-
 }
 ?>
 <HTML>
@@ -181,7 +123,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 </HEAD>
 
 <BODY>
-<?php require 'user_dashboard_navbar.php' //nav bar
+<?php require 'admin_dashboard_navbar.php' //nav bar
 ?>
 <h2 style=" padding-left: 25px;" >Modify Profile</h2>
 <div class="wrapper" style="width: 20%; padding-left: 25px;" >
@@ -208,23 +150,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         </div>
 
         <br>
-        <h3>Change Account Category
-            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal"><i class="material-icons">info</i></button>
-        </h3>
-
-        <br>
-        <div class="form-group <?php echo (!empty($new_category_err)) ? 'has-error' : ''; ?>">
-            <label>Account Type:   </label>
-            <select name="new_category" size="1">
-                <option value="" selected disabled hidden>Choose Account Type</option>
-                <option value="basic">Basic (Free!) </option>
-                <option value="prime">Prime (10$/Month)</option>
-                <option value="gold">Gold (20$/Month)</option>
-            </select>
-            <label for="confirm">Confirm Category Change? </label>
-            <input type="radio" id="category_confirm" name="category_confirm" value="category_confirm">
-            <span class="help-block"><?php echo $new_category_err; ?></span>
-        </div>
         <span class="help-block" style="color: green"><?php echo $update_result; ?></span>
         <br>
         <div class="form-group">
@@ -232,26 +157,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             <input type="reset" class="btn btn-default" value="Reset">
         </div>
     </form>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Account Category Details</h4>
-            </div>
-            <div class="modal-body">
-                <p>Basic: You may view as many jobs as you wish, but you cannot apply. Fees: Free!</p>
-                <p>Prime: You may view as many jobs as you wish and apply for up to 5 jobs. Fees: 10$ monthly.</p>
-                <p>Gold (Recommended): You may view and apply to as many jobs as you wish! Fees: 20$ monthly.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
 </div>
 </div>
 </BODY>

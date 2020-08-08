@@ -62,8 +62,29 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
 <!--    <script src="functions.js"></script>-->
 </HEAD>
 
-<p>
-<?php require 'user_dashboard_navbar.php' //nav bar
+
+<BODY>
+<?php
+$accountID = $_SESSION['accountID'];
+$sql = "SELECT accountID FROM 1Admin WHERE accountID= '$accountID'";
+$result = mysqli_query($db,$sql);
+if(mysqli_num_rows($result) ==1)
+{
+    require 'admin_dashboard_navbar.php' ;
+}
+else{
+    $sql = "SELECT isEmployer FROM 1User WHERE accountID= '$accountID'";
+    $result = mysqli_query($db,$sql);
+    $row = mysqli_fetch_array($result);
+    if($row['isEmployer']==1)
+    {
+        require 'employer_dashboard_navbar.php' ;
+    }
+    else{
+        require 'user_dashboard_navbar.php' ;
+    }
+}
+
 ?>
 <div align="center"><p><H1>My balance: </H1></p></div>
 <div align="center"><p><H1>$<?php echo $balance;?></H1></p></div>
