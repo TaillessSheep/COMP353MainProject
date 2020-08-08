@@ -1,5 +1,5 @@
 <?php
-require 'config.php'; 
+require 'config.php';
 // Define variables and initialize with empty values
 $old_accountID = $new_accountID=$old_password = $new_password = $new_category="";
 $old_accountID_err = $new_accountID_err = $old_password_err = $new_password_err = $new_category_err="";
@@ -90,7 +90,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 
                 // Set parameters
                 $param_new_password = trim($_POST["new_password"]);
-                $param_userID = trim($_SESSION["accountID"]);
+                $param_accountID = trim($_SESSION["accountID"]);
                 $param_old_password = trim($_POST["old_password"]);
 
                 // Attempt to execute the prepared statement
