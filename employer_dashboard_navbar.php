@@ -37,6 +37,7 @@ else
         <a href="employer_dashboard.php"><i class="material-icons" style="color: white">home</i></a>
         <a href="employer_job_portal.php">View Jobs</a>
         <a href="employer_published_jobs.php">My Published Jobs</a>
+        <a href="employer_JS_overview.php">Applicants Overview</a>
         <div class="dropdown">
             <button class="dropbtn">Modify Profile
                 <i class="fa fa-caret-down"></i>
