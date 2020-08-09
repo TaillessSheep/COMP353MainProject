@@ -1,9 +1,6 @@
 <?php
 require 'config.php';
 session_start();
-
-
-
 ?>
 <HTML>
 <HEAD>
@@ -27,9 +24,13 @@ $profileName= $_SESSION['profileName'];
 $sql = "SELECT COUNT(*) AS number_jobs FROM 1Job WHERE employerID = '".$_SESSION['accountID']."'";
 $result = mysqli_query($db,$sql);
 $row = mysqli_fetch_array($result);
-$sql2 = "SELECT status FROM `1User` WHERE accountID = '".$_SESSION['accountID']."'";
-$result2 = mysqli_query($db,$sql2);
+$sql = "SELECT status,phone,email,premiumOpt FROM `1User` WHERE accountID = '".$_SESSION['accountID']."'";
+$result2 = mysqli_query($db,$sql);
 $row2 = mysqli_fetch_array($result2);
+$sql = "SELECT COUNT(*) AS number_applicant FROM 1Applied Ap,1Job J 
+WHERE  Ap.jobID=J.jobID AND Ap.status='pending' AND J.employerID = '".$_SESSION['accountID']."'";
+$result3 = mysqli_query($db,$sql);
+$row3 = mysqli_fetch_array($result3);
 ?>
 <!-- Masthead-->
 <header class="masthead" style="height: 69%;">
@@ -37,16 +38,22 @@ $row2 = mysqli_fetch_array($result2);
         <div class="masthead-subheading"> <?php echo "Welcome, ". $profileName."."?> </div>
         <br>
         <br>
-        <div class="masthead-subheading"> <?php echo "You have ". $row['number_jobs']." jobs posted."?> </div>
+        <div class="masthead-subheading"> <?php echo "You have ". $row['number_jobs']." jobs posted and ". $row3['number_applicant']." pending applications. "?> </div>
         <?php
         if($row2['status']=='frozen')
         {
             ?>
-            <div class="masthead-subheading"> <?php echo "Your account is currently frozen. Please update your payment
-             options or make a manual payment."?> </div>
+            <div class="masthead-subheading"><?php echo "Your account is currently frozen. Please update your payment
+             options or make a manual payment."?></div>
             <?php
         }
         ?>
+        <div class="masthead-subheading"> <br>Here is an overview of your account:<br><br>
+            Account Category: <?php echo $row2['premiumOpt']."."?><br><br>
+            E-mail: <?php echo $row2['email']."."?><br><br>
+            Phone: <?php echo $row2['phone']."."?><br><br>
+        </div>
+
     </div>
 </header>
 
