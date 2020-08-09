@@ -163,7 +163,7 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
         $sql = "INSERT INTO 1Account (accountID, password,profileName) VALUES (?, ?, ?)";
         if($stmt = mysqli_prepare($db, $sql))
         {
-            echo "yea 1";
+
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "sss", $param_accountID, $param_password,$param_realname);
 
@@ -171,45 +171,42 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
             $param_accountID = $accountID;
             $param_password = $password;
             $param_realname = $realname;
-            echo "yea 1";
+
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt))
             {
-                echo "yea 1";
                 //Insertion in account was successfull. Prepare insert statement in Users
-                $sql = "INSERT INTO 1User (accountID, isEmployer,premiumOpt,charge,isAutoPay,selectedMOP,status,paymentDate,email,phone) 
-                VALUES (?,?,?,?,?,?,?,?,?,?)";
+                $sql = "INSERT INTO 1User (accountID, isEmployer,premiumOpt,charge,isAutoPay,status,paymentDate,email,phone) 
+                VALUES (?,?,?,?,?,?,?,?,?)";
                 if($stmt = mysqli_prepare($db, $sql))
                 {
-                    echo "yea 1";
-
                     //Statement is valid
                     // Bind variables to the prepared statement as parameters
-                    mysqli_stmt_bind_param($stmt, "ssssssssss",
+                    mysqli_stmt_bind_param($stmt, "sssssssss",
                         $param_accountID, $param_isEmployer, $param_premiumOpt, $param_charge,$param_isAutoPay,
-                        $param_selectedMOP, $param_status,$param_paymentDate,$param_email,$param_phone);
+                        $param_status,$param_paymentDate,$param_email,$param_phone);
 
                     // Set parameters
                     $param_isEmployer=1; //Employer signup page, hence true
                     $param_charge=$charge;
                     $param_premiumOpt = $account_type;
                     $param_isAutoPay =$isAutoPay;
-                    $param_selectedMOP =$selectedMOP;
+//                    $param_selectedMOP =$selectedMOP;
                     $param_status = 'activated'; // by default true
                     $param_paymentDate=$str_date;
                     $param_email=$email;
                     $param_phone=$phone;
 
 
-                    echo "yea 5";
+
                     if(mysqli_stmt_execute($stmt))
                     {
-                        echo "yea 6";
+
                         // Sucessfull insertion in Users. Prepare an insert statement in MOP table
                         $sql = "INSERT INTO 1MethodOfPayment (accountID, mopDis,methodType,cardNum,holdersName) VALUES (?, ?, ?, ?, ?)";
                         if($stmt = mysqli_prepare($db, $sql))
                         {
-                            echo "yea 7";
+
                             // Bind variables to the prepared statement as parameters
                             mysqli_stmt_bind_param($stmt, "sssss", $param_accountID, $param_mopDis,
                                 $param_methodType,$param_cardNum,$param_holdersName);
@@ -221,9 +218,16 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
                             $param_cardNum=$payment_info;
                             $param_holdersName=$realname;
 
-                            if(mysqli_stmt_execute($stmt))
+                            if(mysqli_stmt_execute($stmt) )
                             {
-                                echo "yea 1";
+
+                                if( $isAutoPay==1){
+                                    // come back to user table to update selectedMOP
+                                    $sql = "UPDATE 1User SET selectedMOP=0 ";
+                                    mysqli_query($db,$sql);
+                                }
+
+
                                 // Succesfull signup. Redirect to login page
                                 $_SESSION['accountID'] = $accountID;
                                 $_SESSION['profileName'] = $realname;
@@ -282,7 +286,7 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
             }
 
             // Close statement
-            mysqli_stmt_close($stmt);
+//            mysqli_stmt_close($stmt);
         }
     }
 
