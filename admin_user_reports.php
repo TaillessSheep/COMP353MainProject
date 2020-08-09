@@ -34,26 +34,14 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 </HEAD>
 
 <BODY>
-<?php require 'admin_dashboard_navbar.php' //nav bar
+<?php require 'admin_dashboard_navbar.php'; //nav bar
+$seeOutstanding=false;
 ?>
 <H1>User Reports</H1>
 <table style="width: 100%;">
     <tr>
         <td style="text-align: center;" >
             <table class="blueTable" style="margin-left: 3%;"">
-            <thead>
-            <tr>
-                <th>Account ID</th>
-                <th>Account Type</th>
-                <th>Account Category</th>
-                <th>Charge</th>
-                <th>Status</th>
-                <th>Email</th>
-                <th>Balance</th>
-                <th>Deactivate</th>
-            </tr>
-            </thead>
-            <tbody id="tableBody">
             <?php
             //Reset table to all applications
             if(isset($_POST['resetTable']))
@@ -99,6 +87,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             //See outstanding balance accounts
             elseif(isset($_POST['seeOutstanding']))
             {
+                $seeOutstanding=true;
                 $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance 
                         FROM `1User`
                         WHERE balance<'" . 0 ."'
@@ -110,9 +99,32 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 $sql = "SELECT accountID,isEmployer,premiumOpt,charge,status,email,balance FROM `1User`ORDER BY isEmployer DESC";
                 $result = mysqli_query($db,$sql);
             }
-
+            ?>
+            <thead>
+            <tr>
+                <th>Account ID</th>
+                <th>Account Type</th>
+                <th>Account Category</th>
+                <th>Charge</th>
+                <th>Status</th>
+                <?php
+                if($seeOutstanding){echo"<th>Became Outstanding Date </th>";}?>
+                <th>Email</th>
+                <th>Balance</th>
+                <th>Deactivate</th>
+            </tr>
+            </thead>
+            <tbody id="tableBody">
+            <?php
             $result = mysqli_query($db,$sql);
             while ($row = mysqli_fetch_array($result)) {
+                if($seeOutstanding)
+                {
+                    $sql = "SELECT date FROM `1FrozenSince` WHERE accountID = '".$row['accountID']."'";
+                    $result2 = mysqli_query($db,$sql);
+                    $row2 = mysqli_fetch_array($result2);
+                }
+
                 if($row['isEmployer']==1)
                 {
                     $accountType = 'Employer';
@@ -127,9 +139,10 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 echo "<td>".$row['premiumOpt']."</td>";
                 echo "<td>".$row['charge']."</td>";
                 echo "<td>".$row['status']."</td>";
+                if($seeOutstanding){echo "<td>".$row2['date']."</td>";}
                 echo "<td>".$row['email']."</td>";
                 echo "<td>".$row['balance']."</td>";
-                if($row['status']=='activated')
+                if($row['status']=='activated' ||$row['status']=='frozen' )
                 {
                     echo "<td>
                         <form method='post'>
@@ -146,10 +159,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                         <input type='hidden' value='".$row['accountID']."' name='switchStatusID'>
                         </form>
                           </td>";
-                }
-                elseif($row['status']=='frozen')
-                {
-                    echo "<td>Frozen. User Settlement required.</td>";
                 }
                 echo "</tr>";
             }
