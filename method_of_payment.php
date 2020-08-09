@@ -10,6 +10,7 @@ $sql = "SELECT selectedMOP,isAutoPay,balance
 $result = mysqli_query($db,$sql);
 $row = mysqli_fetch_array($result);
 $selectedMOP = $row['selectedMOP'];
+$oldSelectedMOP = $selectedMOP;
 $balance = $row['balance'];
 $isAutoPay = $row['isAutoPay'];
 if($selectedMOP==null){
@@ -45,19 +46,41 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST" )
     }elseif(isset($_POST['autoManualSwitch'])){
         $autoORmanual = $_POST['autoORmanual'];
         if($autoORmanual=='Auto Pay'){
-            $isAutoPay = 1;
+            if($selectedMOP==null){
+                echo '<script>alert("You can not set to auto pay without any payment method.")</script>';
+            }
+            else{
+                $isAutoPay = 1;
+                if($oldSelectedMOP==null){
+                    $radioVal = $_POST["defaultMOP"];
+
+                    if($radioVal != $selectedMOP){
+                        $sql = "UPDATE 1User  SET selectedMOP = ".$radioVal." WHERE accountID = '".$_SESSION['accountID']."';";
+                        $result = mysqli_query($db,$sql);
+                        echo '<script>alert("You default payment method has been changed!")</script>';
+                        $selectedMOP = $radioVal;
+                    }
+                }
+                $sql = "UPDATE 1User  SET isAutoPay = ".$isAutoPay." WHERE accountID = '".$_SESSION['accountID']."';";
+                $result = mysqli_query($db,$sql);
+                echo '<script>alert("You have been switched to auto-pay on the first day of every month.")</script>';
+            }
+
         }else{
             $isAutoPay = 0;
-        }
-        $sql = "UPDATE 1User  SET isAutoPay = ".$isAutoPay." WHERE accountID = '".$_SESSION['accountID']."';";
-        $result = mysqli_query($db,$sql);
-//        echo $db->error;
-
-        if($isAutoPay){
-            echo '<script>alert("You have been switched to auto-pay on the first day of every month.")</script>';
-        }else{
+            $sql = "UPDATE 1User  SET isAutoPay = ".$isAutoPay." WHERE accountID = '".$_SESSION['accountID']."';";
+            $result = mysqli_query($db,$sql);
             echo '<script>alert("You have been switched to manual payment.")</script>';
         }
+//        $sql = "UPDATE 1User  SET isAutoPay = ".$isAutoPay." WHERE accountID = '".$_SESSION['accountID']."';";
+//        $result = mysqli_query($db,$sql);
+//        echo $db->error;
+
+//        if($isAutoPay){
+//            echo '<script>alert("You have been switched to auto-pay on the first day of every month.")</script>';
+//        }else{
+//            echo '<script>alert("You have been switched to manual payment.")</script>';
+//        }
 
     }
 }
