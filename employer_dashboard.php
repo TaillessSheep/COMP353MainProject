@@ -33,7 +33,7 @@ $result3 = mysqli_query($db,$sql);
 $row3 = mysqli_fetch_array($result3);
 ?>
 <!-- Masthead-->
-<header class="masthead" style="height: 69%;">
+<header class="masthead" style="height: 69%; min-height:550px">
     <div class="container">
         <div class="masthead-subheading"> <?php echo "Welcome, ". $profileName."."?> </div>
         <br>

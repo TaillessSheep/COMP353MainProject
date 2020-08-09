@@ -27,7 +27,7 @@ $result2 = mysqli_query($db,$sql2);
 $row2 = mysqli_fetch_array($result2);
 ?>
 <!-- Masthead-->
-<header class="masthead" style="height: 69%;">
+<header class="masthead" style="height: 69%;min-height:550px">
     <div class="container">
         <div class="masthead-subheading"> <?php echo "Welcome ". $profileName."."?> </div>
         <br>

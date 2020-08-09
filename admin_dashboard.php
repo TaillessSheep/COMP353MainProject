@@ -20,7 +20,7 @@ $accountID = $_SESSION['accountID'];
 $profileName= $_SESSION['profileName'];
 ?>
 <!-- Masthead-->
-<header class="masthead" style="height: 69%;">
+<header class="masthead" style="height: 69%;min-height:550px">
     <div class="container">
         <div class="masthead-subheading"> <?php echo "Welcome ". $profileName."."?> </div>
         <br>
