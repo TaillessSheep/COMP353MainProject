@@ -7,9 +7,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
     if(isset($_POST['deleteJob']))
     {
-
         $jobID = $_POST['deleteJobID'];
-        echo $jobID;
         $sql = "DELETE FROM `1Job` WHERE jobID='$jobID'";
         if(mysqli_query($db,$sql)){
             $deleteJobResult='You have sucessfully deleted job id# '.$jobID.'.';
