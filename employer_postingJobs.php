@@ -16,6 +16,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
     $endingDate = trim($_POST['endingDate']);
     $category = trim($_POST['category']);
 
+    
 
 //    echo $title.$briefDescription.$description.$requirements.$amountNeeded.$endingDate.$category;
 
