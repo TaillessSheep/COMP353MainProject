@@ -93,122 +93,123 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 <table style="width: 100%;">
     <tr>
         <td style="text-align: center; vertical-align: top"" >
-            <table class="blueTable" style="margin-left: 3%"">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Employer</th>
-                <th>Category</th>
-                <th>Application Date</th>
-                <th>Application Status</th>
-                <th>Details</th>
-            </tr>
-            </thead>
-            <tbody id="tableBody">
-            <?php
-            //Reset table to all applications
-            if(isset($_POST['resetTable']))
-            {
-                $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status 
+        <table class="blueTable" style="margin-left: 3%"">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Employer</th>
+            <th>Category</th>
+            <th>Application Date</th>
+            <th>Application Status</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody id="tableBody">
+        <?php
+        //Reset table to all applications
+        $accountID=$_SESSION['accountID'];
+        if(isset($_POST['resetTable']))
+        {
+            $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status 
                         FROM 1Job J, `1Applied` A
-                        WHERE J.jobID = A.jobID";
-                $result = mysqli_query($db,$sql);
+                        WHERE J.jobID = A.jobID AND A.jobSeekerID = '$accountID'";
+            $result = mysqli_query($db,$sql);
+        }
+        //Search by ID a job
+        elseif(isset($_POST['searchID']))
+        {
+            $jobID = $_POST['jobID'];
+            if(empty($jobID))
+            {
+                $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
+                        FROM 1Job J, `1Applied` A
+                        WHERE J.jobID = A.jobID AND A.jobSeekerID = '$accountID'";
             }
-            //Search by ID a job
-            elseif(isset($_POST['searchID']))
+            else
             {
-                $jobID = $_POST['jobID'];
-                if(empty($jobID))
-                {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
+                $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
-                        WHERE J.jobID = A.jobID";
-                }
-                else
-                {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
-                        FROM 1Job J, `1Applied` A
-                        WHERE J.jobID = A.jobID AND J.jobID='".$jobID."'";
-                }
+                        WHERE J.jobID = A.jobID AND J.jobID='".$jobID."' AND A.jobSeekerID = '$accountID'";
+            }
 
-                $result = mysqli_query($db,$sql);
-            }
-            // Search applications by category
-            elseif(isset($_POST['searchCategory']))
+            $result = mysqli_query($db,$sql);
+        }
+        // Search applications by category
+        elseif(isset($_POST['searchCategory']))
+        {
+            $category = $_POST['category'];
+            if($category == 'all' || empty($category))
             {
-                $category = $_POST['category'];
-                if($category == 'all' || empty($category))
-                {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
+                $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
-                        WHERE J.jobID = A.jobID";
-                }
-                else
-                {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
-                        FROM 1Job J, `1Applied` A
-                        WHERE J.jobID = A.jobID AND category='".$category."'";
-                }
-                $result = mysqli_query($db,$sql);
+                        WHERE J.jobID = A.jobID AND A.jobSeekerID = '$accountID'";
             }
-            //Search jobs by application date
-            elseif(isset($_POST['searchDate']))
+            else
             {
-                $fromDate = $_POST['date_from'];
-                $toDate = $_POST['date_to'];
-                //No date limit
-                if(empty($fromDate) and empty($toDate))
-                {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
+                $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
-                        WHERE J.jobID = A.jobID ";
-                }
-                // no lower date limit
-                elseif(empty($fromDate))
-                {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
-                        FROM 1Job J, `1Applied` A
-                        WHERE J.jobID = A.jobID AND appliedOn<='".$toDate."'";
-                }
-                // no upper date limit
-                elseif(empty($toDate))
-                {
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
-                        FROM 1Job J, `1Applied` A
-                        WHERE J.jobID = A.jobID AND appliedOn>='".$fromDate."'";
-                }
-                // 2 side bounded date span
-                else{
-                    $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
-                        FROM 1Job J, `1Applied` A
-                        WHERE J.jobID = A.jobID AND appliedOn>='".$fromDate."'AND appliedOn<='".$toDate."'";
-                }
-                $result = mysqli_query($db,$sql);
+                        WHERE J.jobID = A.jobID AND category='".$category."' AND A.jobSeekerID = '$accountID'";
             }
-            //Default table. All applications
+            $result = mysqli_query($db,$sql);
+        }
+        //Search jobs by application date
+        elseif(isset($_POST['searchDate']))
+        {
+            $fromDate = $_POST['date_from'];
+            $toDate = $_POST['date_to'];
+            //No date limit
+            if(empty($fromDate) and empty($toDate))
+            {
+                $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
+                        FROM 1Job J, `1Applied` A
+                        WHERE J.jobID = A.jobID AND A.jobSeekerID = '$accountID' ";
+            }
+            // no lower date limit
+            elseif(empty($fromDate))
+            {
+                $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
+                        FROM 1Job J, `1Applied` A
+                        WHERE J.jobID = A.jobID AND appliedOn<='".$toDate."' AND A.jobSeekerID = '$accountID'";
+            }
+            // no upper date limit
+            elseif(empty($toDate))
+            {
+                $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
+                        FROM 1Job J, `1Applied` A
+                        WHERE J.jobID = A.jobID AND appliedOn>='".$fromDate."' AND A.jobSeekerID = '$accountID'";
+            }
+            // 2 side bounded date span
             else{
                 $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
                         FROM 1Job J, `1Applied` A
-                        WHERE J.jobID = A.jobID";
-                $result = mysqli_query($db,$sql);
+                        WHERE J.jobID = A.jobID AND appliedOn>='".$fromDate."'AND appliedOn<='".$toDate."' AND A.jobSeekerID = '$accountID'";
             }
+            $result = mysqli_query($db,$sql);
+        }
+        //Default table. All applications
+        else{
+            $sql = "SELECT J.jobID,title,briefDescription,postDate,category,description,requirements,amountNeeded,endingDate,employerID,appliedOn,A.status  
+                        FROM 1Job J, `1Applied` A
+                        WHERE J.jobID = A.jobID AND A.jobSeekerID = '$accountID'";
+            $result = mysqli_query($db,$sql);
+        }
 
-            while ($row = mysqli_fetch_array($result)) {
-                ?>
-                <script> var jobdata = <?php echo json_encode($row);?></script>
-                <?php
-                echo "<tr>";
-                echo "<td>".$row['jobID']."</td>";
-                echo "<td>".$row['title']."</td>";
-                echo "<td>".$row['briefDescription']."</td>";
-                echo "<td>".$row['employerID']."</td>";
-                echo "<td>".$row['category']."</td>";
-                echo "<td>".$row['appliedOn']."</td>";
-                if($row['status']=='offer')
-                {
-                    echo "<td>You have received an offer! 
+        while ($row = mysqli_fetch_array($result)) {
+            ?>
+            <script> var jobdata = <?php echo json_encode($row);?></script>
+            <?php
+            echo "<tr>";
+            echo "<td>".$row['jobID']."</td>";
+            echo "<td>".$row['title']."</td>";
+            echo "<td>".$row['briefDescription']."</td>";
+            echo "<td>".$row['employerID']."</td>";
+            echo "<td>".$row['category']."</td>";
+            echo "<td>".$row['appliedOn']."</td>";
+            if($row['status']=='offer')
+            {
+                echo "<td>You have received an offer! 
                            <form method='post'>
                            <select name='offerDecision'>
                            <option value=''hidden>Decision</option>
@@ -218,20 +219,20 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                             <input type='submit' value='Send'>
                             </form>
                            </td>";
-                }
-                else{
-                    echo "<td>".$row['status']."</td>";
-                }
-                echo "<td>".
-                    "<div hidden id='data".$row['jobID']."'>".json_encode($row,JSON_PRETTY_PRINT)."</div>".
-                    "<button class='expandable' id ='button".$row['jobID']."'style='border: none' value='".$row['jobID']."' onclick='getMoreJobInfo(this.value)'>".
-                    "<i class=\"material-icons\">expand_more</i>".
-                    "More</button>".
-                    "</td>";
-                echo "</tr>";
             }
-            ?>
-            </tbody>
+            else{
+                echo "<td>".$row['status']."</td>";
+            }
+            echo "<td>".
+                "<div hidden id='data".$row['jobID']."'>".json_encode($row,JSON_PRETTY_PRINT)."</div>".
+                "<button class='expandable' id ='button".$row['jobID']."'style='border: none' value='".$row['jobID']."' onclick='getMoreJobInfo(this.value)'>".
+                "<i class=\"material-icons\">expand_more</i>".
+                "More</button>".
+                "</td>";
+            echo "</tr>";
+        }
+        ?>
+        </tbody>
 </table>
 </td>
 <td style="text-align: center">
