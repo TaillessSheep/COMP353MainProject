@@ -12,8 +12,10 @@ $accountID = $_SESSION['accountID'];
 if(isset($_POST["selectedMOP"])){
     $radioVal = $_POST["selectedMOP"];
     $_SESSION['selectedMOP'] = $radioVal;
-}else{
+}elseif(isset($_SESSION['selectedMOP']) and $_SESSION['selectedMOP']!=''){
     $radioVal = $_SESSION['selectedMOP'];
+}else{
+    header('location: payment_manualPayment_selectMethod.php');
 }
 $sql = "SELECT methodType, cardNum, holdersName, expirationDate
         FROM `1MethodOfPayment`
