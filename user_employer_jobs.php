@@ -73,7 +73,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 <BODY>
 <?php require 'user_dashboard_navbar.php' //nav bar
 ?>
-<H1>Job Portal</H1>
+<H1>Jobs of this employer</H1>
 <table style="width: 100%;">
     <tr>
         <td style="text-align: center;vertical-align: top"" >

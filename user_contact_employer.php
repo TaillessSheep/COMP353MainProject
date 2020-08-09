@@ -1,5 +1,5 @@
 <?php
-//require 'config.php';
+require 'config.php';
 session_start();
 $sentMessageResult="";
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
