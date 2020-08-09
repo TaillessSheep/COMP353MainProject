@@ -42,8 +42,8 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                     FROM 1Applied A,1Job J, 1User U,1Account Ac 
                     WHERE A.jobSeekerID = U.accountID AND Ac.accountID=U.accountID AND A.jobID = J.jobID AND J.employerID='".$accountID."'";
                 $result = mysqli_query($db,$sql);
-                echo $db->error;
                 while ($row = mysqli_fetch_array($result)) {
+                    if(empty($row['jobSeekerID'])){break;}
                     echo "<tr>";
                     echo "<td>".$row['jobSeekerID']."</td>";
                     echo "<td>".$row['profileName']."</td>";
@@ -52,7 +52,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                     echo "<td>".$row['numberApplication']."</td>";
                     echo "<td><a href='employer_JS_applications.php?JSID=".$row['jobSeekerID']."'>See Their Applications</a></td>";
                     echo "</tr>";
-                }
+            }
                 ?>
                 </tbody>
             </table>
