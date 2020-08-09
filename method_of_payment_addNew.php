@@ -14,11 +14,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
 
     $sql = "SELECT mopDis
             FROM `1MethodOfPayment`
-            WHERE accountID = ".$_SESSION['accountID']."
+            WHERE accountID = '".$_SESSION['accountID']."'
             ORDER BY mopDis DESC LIMIT 1;
             ";
     $result = mysqli_query($db,$sql);
     $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+    echo $db->error;
     $myMOPdis = $row['mopDis'] + 1;
 
     if($_POST["paymentMethod"] == "credit") {
