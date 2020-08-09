@@ -22,7 +22,7 @@ $profileName= $_SESSION['profileName'];
 $sql = "SELECT COUNT(*) AS number_jobs FROM `1Applied` WHERE jobSeekerID = '".$_SESSION['accountID']."'";
 $result = mysqli_query($db,$sql);
 $row = mysqli_fetch_array($result);
-$sql2 = "SELECT status FROM `1User` WHERE accountID = '".$_SESSION['accountID']."'";
+$sql2 = "SELECT status,premiumOpt,email,phone FROM `1User` WHERE accountID = '".$_SESSION['accountID']."'";
 $result2 = mysqli_query($db,$sql2);
 $row2 = mysqli_fetch_array($result2);
 ?>
@@ -33,13 +33,18 @@ $row2 = mysqli_fetch_array($result2);
         <br>
         <br>
         <div class="masthead-subheading"> <?php echo "You have applied to ". $row['number_jobs']." job(s)."?> </div>
+        <div class="masthead-subheading"> Here is an overview of your account:<br><br>
+            Account Category: <?php echo $row2['premiumOpt']."."?><br><br>
+            E-mail: <?php echo $row2['email']."."?><br><br>
+            Phone: <?php echo $row2['phone']."."?><br><br>
+        </div>
         <?php
         if($row2['status']=='frozen')
         {
             ?>
             <div class="masthead-subheading"> <?php echo "Your account is currently frozen. Please update your payment
              options or make a manual payment."?> </div>
-        <?php
+            <?php
         }
         ?>
     </div>

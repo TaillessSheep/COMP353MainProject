@@ -1,6 +1,7 @@
 <?php
-require 'config.php';
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 $sql = "SELECT status  FROM `1User` WHERE accountID = '".$_SESSION['accountID']."'";
 $result = mysqli_query($db,$sql);
 $row = mysqli_fetch_array($result);
@@ -34,8 +35,10 @@ else
     ?>
     <div class="navbar" style="margin: 0">
         <a href="employer_dashboard.php"><i class="material-icons" style="color: white">home</i></a>
+        <a href="employer_postingJobs.php">Post New Job</a>
         <a href="employer_job_portal.php">View Jobs</a>
         <a href="employer_published_jobs.php">My Published Jobs</a>
+        <a href="employer_JS_overview.php">Applicants Overview</a>
         <div class="dropdown">
             <button class="dropbtn">Modify Profile
                 <i class="fa fa-caret-down"></i>

@@ -2,7 +2,7 @@
 require 'config.php'; //TODO UNCOMMENT
 session_start();
 $lastPage = $_SESSION["lastPage"];
-$_SESSION["lastPage"] = "";
+
 $creditCardNumber = $holderName1 = $holderName2 = $expDate = $checkingAccountNum = "";
 $methodType_err = $creditCardNumber_err = $holderName_err1 = $holderName_err2 = $expDate_err = $checkingAccountNum_err = $login_error = "";
 
@@ -12,14 +12,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
     $accountID_err="";
     $password_err="";
 
+    $lastPage = $_SESSION["lastPage"];
+    $_SESSION["lastPage"] = "";
+
     $sql = "SELECT mopDis
             FROM `1MethodOfPayment`
-            WHERE accountID = ".$_SESSION['accountID']."
+            WHERE accountID = '".$_SESSION['accountID']."'
             ORDER BY mopDis DESC LIMIT 1;
             ";
     $result = mysqli_query($db,$sql);
     $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
     $myMOPdis = $row['mopDis'] + 1;
+//    echo $myMOPdis."   ";
 
     if($_POST["paymentMethod"] == "credit") {
         if (empty(trim($_POST['creditCardNumber']))) {
@@ -60,6 +64,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
                 echo $stmt->error;
                 mysqli_stmt_close($stmt);
                 header("location: " . $lastPage);
+//                header("location: method_of_payment.php");
             }
 //            else {
 //                echo $db->error;
@@ -99,6 +104,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
                 mysqli_stmt_execute($stmt);
                 mysqli_stmt_close($stmt);
                 header("location: " . $lastPage);
+//                header("location: method_of_payment.php");
+//                echo 'window.location.href = "method_of_payment.php";';
             } else {
 //                echo $db->error;
             }
