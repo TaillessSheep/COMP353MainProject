@@ -1,7 +1,7 @@
 <?php
 require 'config.php';
 session_start();
-$accountID=$deleteJobResult="";
+$accountID=$deleteJobResult=$appliedJob_err="";
 // Processing form data when form is submitted
 if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 {
