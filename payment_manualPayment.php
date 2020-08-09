@@ -90,6 +90,20 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
             $msg = $msg.'\nYour account has been unfreeze.';
         }
 
+
+        // email to inform the payment
+        if($isENCS){
+            $to = $email ;
+            $subject = "Money~~";
+            $txt = "<html><body><H2> We got your MONEY!<H2>
+                <P><H3>Thank you for your $".$topUpAmount." from your bank, you rich dumm dumm.</H3></P>
+                <p><H3>Your balance is now $0.</H3></p></body></html>";
+            $headers = "From: TheNewIndeed@company.com" . "\r\n";
+            $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+            mail($to, $subject, $txt, $headers);
+        }
+
+
         echo '<script type="text/javascript">';
         echo "alert('".$msg."');";
         echo 'window.location.href = "method_of_payment.php";';
