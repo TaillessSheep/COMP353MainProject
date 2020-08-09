@@ -217,7 +217,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
         <tr>
             <form method="post">
                 <td style="padding-bottom: 1em;">
-                    <input type="submit" name="searchDate" value="Search By Date" style="min-width: 170px">
+                    <input type="submit" name="searchDate" value="Search By Post Date" style="min-width: 170px">
                 </td>
                 <td style="padding-bottom: 1em;padding-left: 1em">
                     <label>From</label>
