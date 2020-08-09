@@ -34,16 +34,20 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 
         if (empty($appliedJob_err))
         {
-            $sql = "INSERT INTO `1Applied` (jobID, jobSeekerID,status) VALUES (?, ?, ?)";
+            $sql = "INSERT INTO `1Applied` (jobID, jobSeekerID,status,appliedOn) VALUES (?, ?, ?,?)";
             if ($stmt = mysqli_prepare($db, $sql))
             {
                 // Bind variables to the prepared statement as parameters
-                mysqli_stmt_bind_param($stmt, "sss", $param_jobID, $param_accountID, $param_status);
+                mysqli_stmt_bind_param($stmt, "ssss", $param_jobID, $param_accountID, $param_status,$param_appliedOn);
 
+                // Get Date
+                $date = new DateTime('now');
+                $str_date=date_format($date, 'Y-m-d');
                 // Set parameters
                 $param_jobID = $appliedJob;
                 $param_accountID = $accountID;
                 $param_status = 'pending';
+                $param_appliedOn=$str_date;
 
                 if (mysqli_stmt_execute($stmt))
                 {
