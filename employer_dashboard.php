@@ -1,6 +1,26 @@
 <?php
 require 'config.php';
 session_start();
+if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
+{
+    $accountID= $_SESSION['accountID'];
+    $sql = "SELECT email FROM 1User WHERE accountID = '$accountID'";
+    $result = mysqli_query($db,$sql);
+    $row = mysqli_fetch_array($result) ;
+    $my_email=$row['email'];
+    $name=$_POST['name'];
+    $email=$_POST['email'];
+    $phone=$_POST['phone'];
+    $message=$_POST['message'];
+
+    $to = $email;
+    $subject = "Message from employer";
+    $txt = $message;
+    $headers = "From: ". $my_email . "\r\n";
+    $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+    mail($to, $subject, $txt, $headers);
+}
+
 ?>
 <HTML>
 <HEAD>
