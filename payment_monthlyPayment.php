@@ -1,7 +1,7 @@
 <?php
 require 'config.php';
+require 'isENCS.php';
 session_start();
-
 
 
 $sql = "SELECT accountID,charge,selectedMOP,email,balance,isAutoPay,status
@@ -29,6 +29,7 @@ while ($row = mysqli_fetch_array($result1)) {
     // if the account balance is sufficient
     if($balance >= $charge){
         $balance = $balance - $charge;
+        $cost = $charge;
         $sql = "UPDATE 1User
                     SET balance=?, paymentDate = ?
                     WHERE accountID=?";
@@ -84,31 +85,45 @@ while ($row = mysqli_fetch_array($result1)) {
 
         // email the user about the auto-withdrawal
         $txt = "<html><body><H2> We got your MONEY!<H2>
-                <P><H3>$".$cost." has been deducted from your account.</H3></P>
-                <P><H3>And thank you for your $".$cost." from your bank, you rich dumm dumm.</H3></P>
+                <P><H3>$".$deducted." has been deducted from your account.</H3></P>
+                <P><H3>And thank you for your $".$charge." from your bank, you rich dumm dumm.</H3></P>
                 <p><H3>Your balance is now $0.</H3></p></body></html>";
 
     }
     // if not able to pay
     else{
         $balance = $balance - $charge;
-        $status = 'frozen';
 
         // update the DB
         $sql = "UPDATE 1User
-                    SET balance=?, status = ?
+                    SET balance=?, status = 'frozen'
                     WHERE accountID=?";
         if ($stmt = mysqli_prepare($db, $sql)) {
-            mysqli_stmt_bind_param($stmt, "sss", $param_balance, $param_status, $param_accountID);
+            mysqli_stmt_bind_param($stmt, "ss", $param_balance, $param_accountID);
             // Set parameters
             $param_balance      = $balance;
-            $param_status       = $status;
             $param_accountID    = $accountID;
 
             mysqli_stmt_execute($stmt);
             echo $stmt->error;
             mysqli_stmt_close($stmt);
         }
+        if($status!='frozen'){
+            $sql = "INSERT INTO 1FrozenSince
+                    VALUES (?,?)";
+            if ($stmt = mysqli_prepare($db, $sql)) {
+                mysqli_stmt_bind_param($stmt, "ss", $param_accountID, $param_date);
+                // Set parameters
+                $param_accountID    = $accountID;
+                $param_date = date("y-m-d");
+
+                mysqli_stmt_execute($stmt);
+                echo $stmt->error;
+                mysqli_stmt_close($stmt);
+            }
+        }
+
+
 
         // email the user about the auto-withdrawal
         $txt = "<html><body><H1>Yo! Give us your MONEY!<H1>
@@ -119,13 +134,15 @@ while ($row = mysqli_fetch_array($result1)) {
     }
 
     // email the user about the auto-withdrawal
-    $to = $email ;
-    $subject = "Money";
-    $cost = $charge;
-//    $txt = "<html><body><H2> We got your MONEY!<H2><P><H3>Thank you for your $".$cost.", you rich dumm dumm.</H3></P></body></html>";
-    $headers = "From: TheNewIndeed@company.com" . "\r\n";
-    $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
-    mail($to, $subject, $txt, $headers);
+    if($isENCS){
+        $to = $email ;
+        $subject = "Money";
+        $cost = $charge;
+        $headers = "From: TheNewIndeed@company.com" . "\r\n";
+        $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+        mail($to, $subject, $txt, $headers);
+    }
+
 
     echo " new balance:".$balance." new status:".$status." done \n";
 }

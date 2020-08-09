@@ -10,10 +10,18 @@ $sql = "SELECT selectedMOP,isAutoPay,balance
 $result = mysqli_query($db,$sql);
 $row = mysqli_fetch_array($result);
 $selectedMOP = $row['selectedMOP'];
-
 $balance = $row['balance'];
-
 $isAutoPay = $row['isAutoPay'];
+if($selectedMOP==null){
+    $sql = "SELECT mopDis
+            FROM `1MethodOfPayment`
+            WHERE accountID = '".$_SESSION['accountID']."'
+            ORDER BY mopDis ASC LIMIT 1;";
+
+    $result = mysqli_query($db,$sql);
+    $row = mysqli_fetch_array($result);
+    $selectedMOP = $row['mopDis'];
+}
 
 
 $unappliedJob=$accountID=$unappliedJob_err=$unapply_result="";
