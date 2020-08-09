@@ -35,6 +35,7 @@ else
     ?>
     <div class="navbar" style="margin: 0">
         <a href="employer_dashboard.php"><i class="material-icons" style="color: white">home</i></a>
+        <a href="employer_postingJobs.php">Post New Job</a>
         <a href="employer_job_portal.php">View Jobs</a>
         <a href="employer_published_jobs.php">My Published Jobs</a>
         <a href="employer_JS_overview.php">Applicants Overview</a>
