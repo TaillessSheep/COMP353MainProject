@@ -196,7 +196,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
         <div id="topUpAmount">
             <div class="form-group <?php echo (!empty($topUpAmount_err)) ? 'has-error' : ''; ?>">
                 <label id="topUpAmount">Amount to Top Up</label>
-                <input type="number" min="0" name="topUpAmount" class="form-control" value="">
+                <input type="number" min="0" max="1000000" name="topUpAmount" class="form-control" value="">
                 <span class="help-block"><?php echo $topUpAmount_err; ?></span>
             </div>
         </div>
