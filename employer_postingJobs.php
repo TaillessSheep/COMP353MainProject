@@ -170,7 +170,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
             </div>
         </td>
         <td style="vertical-align: top;padding-left: 30px;">
-            <h3>Can't find the right category?</h3>
+            <h3>Add a Category</h3>
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="form-group <?php echo (!empty($newCategory_err)) ? 'has-error' : ''; ?>" style="width: 70mm">
                     <label>Add a new job category</label>
@@ -187,6 +187,55 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
                 </div>
             </form>
             <span style="color: green"><?php echo $addNewCategoryResult; ?></span>
+
+            <h3>Edit a Category</h3>
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                <div style="width: 70mm">
+                    <label>Category</label>
+                    <select name="categoryToEdit"  size="1" style="min-width: 100px">
+                        <?php
+                        $sql = "SELECT categoryName AS category 
+                                FROM 1JobCategory";
+                        $result = mysqli_query($db,$sql);
+                        while ($row = mysqli_fetch_array($result)) {
+                            echo "<option value='".$row['category']."'>".$row['category']."</option>";
+                        }
+                        ?>
+                    </select>
+                    <br>
+                    <label>New Category Name</label>
+                    <input type="text"
+                           name="newCategoryName"
+                           class="form-control"
+                           placeholder="No more than 60 characters"
+                           value="<?php echo $newCategory; ?>"
+                           required>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary"  name="editCategory" value="Edit">
+                </div>
+            </form>
+            <h3>Delete a Category</h3>
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                <div style="width: 70mm">
+                    <label>Category</label>
+                    <select name="categoryToDelete"  size="1" style="min-width: 100px">
+                        <?php
+                        $sql = "SELECT categoryName AS category 
+                                FROM 1JobCategory";
+                        $result = mysqli_query($db,$sql);
+                        while ($row = mysqli_fetch_array($result)) {
+                            echo "<option value='".$row['category']."'>".$row['category']."</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary"  name="deleteCategory" value="Delete">
+                </div>
+            </form>
+
         </td>
     </tr>
 </table>
