@@ -40,7 +40,7 @@ $seeOutstanding=false;
 <H1>User Reports</H1>
 <table style="width: 100%;">
     <tr>
-        <td style="text-align: center;" >
+        <td style="text-align: center;vertical-align: top"" >
             <table class="blueTable" style="margin-left: 3%;"">
             <?php
             //Reset table to all applications
