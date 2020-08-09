@@ -1,8 +1,8 @@
 <?php
 require 'config.php'; //TODO UNCOMMENT
 session_start();
-$lastPage = $_SESSION["lastPage"];
-$_SESSION["lastPage"] = "";
+$lastPage = "method_of_payment.php";
+$_SESSION["lastPage"] = "payment_manualPayment.php";
 $creditCardNumber = $holderName1 = $holderName2 = $expDate = $checkingAccountNum = "";
 $methodType_err = $creditCardNumber_err = $holderName_err1 = $holderName_err2 = $expDate_err = $checkingAccountNum_err = $login_error = "";
 $topUpAmount_err='';
@@ -33,38 +33,69 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
         $topUpAmount_err = "Nothing has been topped up.";
     }else{
         //get the current balance
-        $sql = "SELECT balance
+        $sql = "SELECT balance,status
         FROM 1User
         WHERE accountID = '".$_SESSION['accountID']."';";
         $result = mysqli_query($db,$sql);
         $row = mysqli_fetch_array($result);
         $balance=$row['balance'];
+        $oldStatus=$row['status'];
 
         //compute the new balance
         $balance = $balance + $topUpAmount;
 
         //update DB
         $sql = "UPDATE 1User
-                    SET balance=?
+                    SET balance=?, status=?
                     WHERE accountID=?";
 
         if ($stmt = mysqli_prepare($db, $sql)) {
-            mysqli_stmt_bind_param($stmt, "ss", $param_balance, $param_accountID);
+            mysqli_stmt_bind_param($stmt, "sss", $param_balance, $param_status, $param_accountID);
             // Set parameters
             $param_accountID = $accountID;
             $param_balance = $balance;
+            if($balance<0){
+                $param_status='frozen';
+            }
+            else{
+                $param_status='activated';
+            }
 
             mysqli_stmt_execute($stmt);
             echo $stmt->error;
             mysqli_stmt_close($stmt);
-//            header("location: " . $lastPage);
+        }
+
+        //if an account has been unfreeze
+        if($oldStatus=='frozen' and $balance>=0){
+            //update DB
+            $sql = "DELETE FROM 1FrozenSince
+                    WHERE accountID=?";
+
+            if ($stmt = mysqli_prepare($db, $sql)) {
+                mysqli_stmt_bind_param($stmt, "s",  $param_accountID);
+                // Set parameters
+                $param_accountID = $accountID;
+
+                mysqli_stmt_execute($stmt);
+                echo $stmt->error;
+                mysqli_stmt_close($stmt);
+            }
+        }
+
+
+        $msg = 'You have successfully topped up $'.$topUpAmount.'.';
+
+        if($oldStatus=='frozen' and $balance>=0){
+            $msg = $msg.'\nYour account has been unfreeze.';
         }
 
         echo '<script type="text/javascript">';
-        echo "alert('You have successfully topped up $".$topUpAmount.".');";
+        echo "alert('".$msg."');";
         echo 'window.location.href = "method_of_payment.php";';
         echo '</script>';
 //        header('method_of_payment.php');
+//        echo "heh1";
 
     }
 
