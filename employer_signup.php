@@ -125,6 +125,17 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
         }
     }
 
+    //Validate automatic payment
+    if(isset($_POST['isAutoPay']))
+    {
+        $isAutoPay=1;
+        $selectedMOP=0;
+    }
+    else
+    {
+        $isAutoPay=0;
+    }
+
     //Validate account category info
     if(trim($_POST["account_type"]) == ''){
         $account_type_err = "Please choose an option";
@@ -215,6 +226,15 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
                                 echo "yea 1";
                                 // Succesfull signup. Redirect to login page
                                 $_SESSION['accountID'] = $accountID;
+                                $_SESSION['profileName'] = $realname;
+
+                                // payment made here
+                                // (the emperor's new code)
+
+                                // email to inform
+                                
+
+
                                 header("location: employer_dashboard.php");
                             }
                             else{
