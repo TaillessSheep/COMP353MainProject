@@ -232,8 +232,17 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
                                 // (the emperor's new code)
 
                                 // email to inform
-                                
-
+                                require 'isENCS.php';
+                                if($isENCS){
+                                    $to = $email ;
+                                    $subject = "Money~";
+                                    $txt = "<html><body><H2> We got your MONEY!<H2>
+                                            <P><H3>Thank you for your $".$charge." from your bank, you rich dumm dumm.</H3></P>
+                                            <p><H3>Your balance is now $0.</H3></p></body></html>";
+                                    $headers = "From: TheNewIndeed@company.com" . "\r\n";
+                                    $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+                                    mail($to, $subject, $txt, $headers);
+                                }
 
                                 header("location: employer_dashboard.php");
                             }
