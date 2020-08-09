@@ -121,6 +121,7 @@ while ($row = mysqli_fetch_array($result1)) {
                 echo $stmt->error;
                 mysqli_stmt_close($stmt);
             }
+            $status = 'frozen';
         }
 
 
