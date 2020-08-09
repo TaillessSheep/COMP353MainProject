@@ -85,60 +85,57 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
         }
     }
 
-    //Validate MOP
-    if(empty(trim($_POST["MOP"]))){
-        $MOP_err = "Please choose a method of payment";
-    } else{
-        $MOP = trim($_POST["MOP"]);
-    }
+//    //Validate MOP
+//    if(empty(trim($_POST["MOP"]))){
+//        $MOP_err = "Please choose a method of payment";
+//    } else{
+//        $MOP = trim($_POST["MOP"]);
+//    }
 
-    //Validate automatic payment
-    if(isset($_POST['isAutoPay']))
-    {
-        $isAutoPay=1;
-        $selectedMOP=0;
-    }
-    else
-    {
-        $isAutoPay=0;
-    }
+//    //Validate automatic payment
+//    if(isset($_POST['isAutoPay']))
+//    {
+//        $isAutoPay=1;
+//        $selectedMOP=0;
+//    }
+//    else
+//    {
+//        $isAutoPay=0;
+//    }
 
     //Get date
     $date = new DateTime('now');
     $date->modify('first day of next month');
     $str_date=date_format($date, 'Y-m-d');
 
-    //Validate payment info
-    if(empty(trim($_POST["payment_info"]))){
-        $payment_info_err = "Please enter your payment information";
-    } else{
-        $payment_info = trim($_POST["payment_info"]);
-    }
 
     //Validate account category info
-    if(empty(trim($_POST["account_type"]))){
-        $account_type_err = "Please choose an option";
-    } else{
-        $account_type = trim($_POST["account_type"]);
-        switch ($account_type) {
-            case "basic":
-                $charge=0;
-                break;
-            case "prime":
-                $charge=10;
-                break;
-            case "gold":
-                $charge=20;
-                break;
-        }
-    }
+//    if(empty(trim($_POST["account_type"]))){
+//        $account_type_err = "Please choose an option";
+//    } else{
+//        $account_type = trim($_POST["account_type"]);
+//        switch ($account_type) {
+//            case "basic":
+//                $charge=0;
+//                break;
+//            case "prime":
+//                $charge=10;
+//                break;
+//            case "gold":
+//                $charge=20;
+//                break;
+//        }
+//    }
 
     // Check input errors before inserting in database
-    if(empty($accountID_err) && empty($password_err) && empty($confirm_password_err) &&
-        empty($payment_info_err) && empty($account_type_err))
+    echo 'hah1';
+    if(empty($accountID_err) && empty($password_err) && empty($confirm_password_err))
+//        &&
+//        empty($payment_info_err) && empty($account_type_err))
     {
         // Prepare an insert statement in account table
         $sql = "INSERT INTO 1Account (accountID, password,profileName) VALUES (?, ?, ?)";
+        echo 'heh1';
         if($stmt = mysqli_prepare($db, $sql))
         {
             // Bind variables to the prepared statement as parameters
@@ -149,12 +146,14 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
             $param_password = $password;
             $param_realname = $realname;
 
+            echo 'heh1';
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt))
             {
                 //Insertion in account was successfull. Prepare insert statement in Users
                 $sql = "INSERT INTO 1User (accountID, isEmployer,premiumOpt,charge,isAutoPay,selectedMOP,status,paymentDate,email,phone) 
                 VALUES (?,?,?,?,?,?,?,?,?,?)";
+                echo 'heh1';
                 if($stmt = mysqli_prepare($db, $sql))
                 {
 
@@ -166,10 +165,10 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
 
                     // Set parameters
                     $param_isEmployer=0; //User signup page, hence false
-                    $param_charge=$charge;
-                    $param_premiumOpt = $account_type;
-                    $param_isAutoPay =$isAutoPay;
-                    $param_selectedMOP =$selectedMOP;
+                    $param_charge=0;
+                    $param_premiumOpt = 'basic';
+                    $param_isAutoPay =0;
+                    $param_selectedMOP =null;
                     $param_status = 'activated'; // by default true
                     $param_paymentDate=$str_date;
                     $param_email=$email;
@@ -178,45 +177,15 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
 
                     if(mysqli_stmt_execute($stmt))
                     {
-                        // Sucessfull insertion in Users. Prepare an insert statement in MOP table
-                        $sql = "INSERT INTO 1MethodOfPayment (accountID, mopDis,methodType,cardNum,holdersName) VALUES (?, ?, ?, ?, ?)";
-                        if($stmt = mysqli_prepare($db, $sql))
-                        {
-                            // Bind variables to the prepared statement as parameters
-                            mysqli_stmt_bind_param($stmt, "sssss", $param_accountID, $param_mopDis,
-                            $param_methodType,$param_cardNum,$param_holdersName);
 
-                            // Set parameters
-                            $param_accountID = $accountID;
-                            $param_mopDis =0;
-                            $param_methodType=$MOP;
-                            $param_cardNum=$payment_info;
-                            $param_holdersName=$realname;
-
-                            if(mysqli_stmt_execute($stmt))
-                            {
-                                // Succesfull signup. Redirect to login page
-                                $_SESSION['accountID'] = $accountID;
-                                header("location: user_dashboard.php");
-                            }
-                            else{
-                                //Failed insert in MOP. Delete from Account & Users
-                                $sql = "DELETE FROM 1Account WHERE accountID= ?";
-                                if($stmt = mysqli_prepare($db, $sql))
-                                {
-                                    mysqli_stmt_bind_param($stmt, "s", $param_accountID);
-                                    // Set parameters
-                                    $param_accountID = $accountID;
-                                    // Attempt to execute the prepared statement
-                                    if(!(mysqli_stmt_execute($stmt)))
-                                        echo "Something went wrong. Please try again later.";
-                                }
-                            }
-
-                        }
+                        // Succesfull signup. Redirect to login page
+                        $_SESSION['accountID'] = $accountID;
+                        $_SESSION['profileName'] = $realname;
+                        header("location: user_dashboard.php");
                     }
                     //Failed insert in users. Delete from Account
                     else{
+                        echo $db->error;
                         $sql = "DELETE FROM 1Account WHERE accountID= ?";
                         if($stmt = mysqli_prepare($db, $sql))
                         {
@@ -298,38 +267,38 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
         </div>
         <br>
         <!--method of payment -->
-        <div class="form-group <?php echo (!empty($MOP_err)) ? 'has-error' : ''; ?>">
-            <label>Method of payment   </label>
-            <select name="MOP" size="1">
-                <option value="" selected disabled hidden>Choose Method of Payment</option>
-                <option value="credit">Credit Card  </option>
-                <option value="checking">Checking Account</option>
-            </select>
-            <span class="help-block"><?php echo $MOP_err; ?></span>
-        </div>
+<!--        <div class="form-group --><?php //echo (!empty($MOP_err)) ? 'has-error' : ''; ?><!--">-->
+<!--            <label>Method of payment   </label>-->
+<!--            <select name="MOP" size="1">-->
+<!--                <option value="" selected disabled hidden>Choose Method of Payment</option>-->
+<!--                <option value="credit">Credit Card  </option>-->
+<!--                <option value="checking">Checking Account</option>-->
+<!--            </select>-->
+<!--            <span class="help-block">--><?php //echo $MOP_err; ?><!--</span>-->
+<!--        </div>-->
         <!--MOP number -->
-        <div class="form-group <?php echo (!empty($payment_info_err)) ? 'has-error' : ''; ?>">
-            <label>Credit Card/Checking Account number:   </label>
-            <input type="text" name="payment_info" class="form-control" value="<?php echo $payment_info=''; ?>">
-            <span class="help-block"><?php echo $payment_info_err; ?></span>
-        </div>
+<!--        <div class="form-group --><?php //echo (!empty($payment_info_err)) ? 'has-error' : ''; ?><!--">-->
+<!--            <label>Credit Card/Checking Account number:   </label>-->
+<!--            <input type="text" name="payment_info" class="form-control" value="--><?php //echo $payment_info=''; ?><!--">-->
+<!--            <span class="help-block">--><?php //echo $payment_info_err; ?><!--</span>-->
+<!--        </div>-->
         <!-- Automatic payment checkbox-->
-        <div class="form-group <?php echo (!empty($isAutoPay_err)) ? 'has-error' : ''; ?>">
-            <label for="isAutoPay">Activate automatic payment?   </label>
-            <input type="checkbox" id="isAutoPay" name="isAutoPay"  value="<?php echo $payment_info=''; ?>" checked>
-            <span class="help-block"><?php echo $isAutoPay_err; ?></span>
-        </div>
+<!--        <div class="form-group --><?php //echo (!empty($isAutoPay_err)) ? 'has-error' : ''; ?><!--">-->
+<!--            <label for="isAutoPay">Activate automatic payment?   </label>-->
+<!--            <input type="checkbox" id="isAutoPay" name="isAutoPay"  value="--><?php //echo $payment_info=''; ?><!--" checked>-->
+<!--            <span class="help-block">--><?php //echo $isAutoPay_err; ?><!--</span>-->
+<!--        </div>-->
         <!-- Account category-->
-        <div class="form-group <?php echo (!empty($account_type_err)) ? 'has-error' : ''; ?>">
-            <label>Account Type:   </label>
-            <select name="account_type" size="1">
-                <option value="" selected disabled hidden>Choose Account Type</option>
-                <option value="basic">Basic (Free!) </option>
-                <option value="prime">Prime (10$/Month)</option>
-                <option value="gold">Gold (20$/Month)</option>
-            </select>
-            <span class="help-block"><?php echo $account_type_err; ?></span>
-        </div>
+<!--        <div class="form-group --><?php //echo (!empty($account_type_err)) ? 'has-error' : ''; ?><!--">-->
+<!--            <label>Account Type:   </label>-->
+<!--            <select name="account_type" size="1">-->
+<!--                <option value="" selected disabled hidden>Choose Account Type</option>-->
+<!--                <option value="basic">Basic (Free!) </option>-->
+<!--                <option value="prime">Prime (10$/Month)</option>-->
+<!--                <option value="gold">Gold (20$/Month)</option>-->
+<!--            </select>-->
+<!--            <span class="help-block">--><?php //echo $account_type_err; ?><!--</span>-->
+<!--        </div>-->
         <br>
 
         <!-- Submit and Reset form-->

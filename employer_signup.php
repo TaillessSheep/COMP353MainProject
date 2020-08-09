@@ -3,7 +3,7 @@
 require "config.php"; //TODO UNCOMMENT
 
 // Define variables and initialize with empty values
-$accountID = $password = $confirm_password = $payment_info = $realname =$phone = $email= $MOP= $isAutoPay= $account_type=$selectedMOP='';
+$accountID = $holderName = $password = $confirm_password = $payment_info = $realname =$phone = $email= $MOP= $isAutoPay= $account_type=$selectedMOP='';
 $accountID_err = $password_err = $confirm_password_err = $payment_info_err = $realname_err = $phone_err= $email_err= $MOP_err= $isAutoPay= $account_type_err="";
 $charge="";
 $isAutoPay_err = '';
@@ -228,7 +228,6 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
                     }
                 }
             } else{
-
                 echo "Something went wrong. Please try again later.";
             }
 
@@ -312,6 +311,16 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
             <input type="text" name="payment_info" class="form-control" value="<?php echo $payment_info=''; ?>">
             <span class="help-block"><?php echo $payment_info_err; ?></span>
         </div>
+        <div class="form-group <?php echo (!empty($holderName_err)) ? 'has-error' : ''; ?>">
+            <label>Card Holder's Name</label>
+            <input type="text" name="holderName" class="form-control" value="<?php echo $holderName; ?>">
+            <span class="help-block"><?php echo $holderName_err; ?></span>
+        </div>
+        <div class="form-group <?php echo (!empty($expDate_err)) ? 'has-error' : ''; ?>">
+            <label>Expiration Date</label>
+            <input type="month" name="expDate" class="form-control" value="<?php echo $expDate; ?>">
+            <span class="help-block"><?php echo $expDate_err; ?></span>
+        </div>
         <!-- Automatic payment checkbox-->
         <div class="form-group <?php echo (!empty($isAutoPay_err)) ? 'has-error' : ''; ?>">
             <label for="isAutoPay">Activate automatic payment?   </label>
@@ -328,6 +337,7 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
             </select>
             <span class="help-block"><?php echo $account_type_err; ?></span>
         </div>
+
         <br>
 
         <!-- Submit and Reset form-->
