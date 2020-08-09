@@ -22,7 +22,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST['Confirm'])) {
             ";
     $result = mysqli_query($db,$sql);
     $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-//    echo $row['mopDis']."   ";
     $myMOPdis = $row['mopDis'] + 1;
 //    echo $myMOPdis."   ";
 
