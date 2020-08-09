@@ -45,7 +45,7 @@ $jobID = $_GET['jobID'];
 <H1>Pending Applications for Job #<?php echo $jobID?></H1>
 <table style="width: 100%;">
     <tr>
-        <td style="text-align: center;" >
+        <td style="text-align: center;vertical-align: top"" >
             <table class="blueTable" style="margin-left: 3%;"">
             <thead>
             <tr>

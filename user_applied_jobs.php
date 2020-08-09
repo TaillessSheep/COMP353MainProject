@@ -92,7 +92,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 
 <table style="width: 100%;">
     <tr>
-        <td style="text-align: center; margin:0" >
+        <td style="text-align: center; vertical-align: top"" >
             <table class="blueTable" style="margin-left: 3%"">
             <thead>
             <tr>

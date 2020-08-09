@@ -23,7 +23,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 <H1>Applicant Reports</H1>
 <table style="width: 100%;">
     <tr>
-        <td style="text-align: center;" >
+        <td style="text-align: center;vertical-align: top"" >
             <table class="blueTable" style="margin-left: 3%;width: 75%">
                 <thead>
                 <tr>
