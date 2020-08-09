@@ -85,23 +85,6 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
         }
     }
 
-//    //Validate MOP
-//    if(empty(trim($_POST["MOP"]))){
-//        $MOP_err = "Please choose a method of payment";
-//    } else{
-//        $MOP = trim($_POST["MOP"]);
-//    }
-
-//    //Validate automatic payment
-//    if(isset($_POST['isAutoPay']))
-//    {
-//        $isAutoPay=1;
-//        $selectedMOP=0;
-//    }
-//    else
-//    {
-//        $isAutoPay=0;
-//    }
 
     //Get date
     $date = new DateTime('now');
@@ -109,33 +92,16 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
     $str_date=date_format($date, 'Y-m-d');
 
 
-    //Validate account category info
-//    if(empty(trim($_POST["account_type"]))){
-//        $account_type_err = "Please choose an option";
-//    } else{
-//        $account_type = trim($_POST["account_type"]);
-//        switch ($account_type) {
-//            case "basic":
-//                $charge=0;
-//                break;
-//            case "prime":
-//                $charge=10;
-//                break;
-//            case "gold":
-//                $charge=20;
-//                break;
-//        }
-//    }
+
 
     // Check input errors before inserting in database
-    echo 'hah1';
     if(empty($accountID_err) && empty($password_err) && empty($confirm_password_err))
 //        &&
 //        empty($payment_info_err) && empty($account_type_err))
     {
         // Prepare an insert statement in account table
         $sql = "INSERT INTO 1Account (accountID, password,profileName) VALUES (?, ?, ?)";
-        echo 'heh1';
+
         if($stmt = mysqli_prepare($db, $sql))
         {
             // Bind variables to the prepared statement as parameters
@@ -146,14 +112,12 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
             $param_password = $password;
             $param_realname = $realname;
 
-            echo 'heh1';
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt))
             {
                 //Insertion in account was successfull. Prepare insert statement in Users
                 $sql = "INSERT INTO 1User (accountID, isEmployer,premiumOpt,charge,isAutoPay,selectedMOP,status,paymentDate,email,phone) 
                 VALUES (?,?,?,?,?,?,?,?,?,?)";
-                echo 'heh1';
                 if($stmt = mysqli_prepare($db, $sql))
                 {
 
@@ -181,7 +145,10 @@ if( isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
                         // Succesfull signup. Redirect to login page
                         $_SESSION['accountID'] = $accountID;
                         $_SESSION['profileName'] = $realname;
-                        header("location: user_dashboard.php");
+                        echo '<script type="text/javascript">';
+                        echo 'window.location.href = "user_dashboard.php";';
+                        echo '</script>';
+
                     }
                     //Failed insert in users. Delete from Account
                     else{
