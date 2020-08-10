@@ -18,7 +18,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) and $_SERVER["REQUEST_METHOD"] == "POST")
 </HEAD>
 
 <BODY>
-<?php require 'employer_dashboard_navbar.php' //nav bar
+<?php require 'user_dashboard_navbar.php' //nav bar
 ?>
 <H1>Employers </H1>
 <table style="width: 100%;">
